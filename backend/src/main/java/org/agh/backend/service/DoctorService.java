@@ -59,8 +59,6 @@ public class DoctorService {
             specialization = specializationRepository.save(new Specialization(specializationName));
         }
 
-        System.out.println(specialization.getName());
-        System.out.println(specializationName);
         Doctor doctor = new Doctor(
                 name,
                 surname,
@@ -71,16 +69,6 @@ public class DoctorService {
 
         doctorRepository.save(doctor);
         return true;
-    }
-
-    public boolean addDoctor(Doctor doctor) {
-        return addDoctor(
-                doctor.getName(),
-                doctor.getSurname(),
-                doctor.getPesel(),
-                doctor.getSpecialization().getName(),
-                doctor.getAddress()
-        );
     }
 
 }

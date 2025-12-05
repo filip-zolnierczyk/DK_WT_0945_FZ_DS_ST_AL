@@ -19,7 +19,7 @@ public class InitExampleDatabase {
 
     @PostConstruct
     public void init() {
-        if (!init) {
+        if (!init || !doctorService.getAllDoctors().isEmpty()) {
             return;
         }
 
