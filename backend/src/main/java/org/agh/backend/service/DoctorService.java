@@ -3,7 +3,9 @@ package org.agh.backend.service;
 import org.agh.backend.dto.DoctorDetailedDto;
 import org.agh.backend.dto.DoctorDto;
 import org.agh.backend.model.Doctor;
+import org.agh.backend.model.Specialization;
 import org.agh.backend.repository.DoctorRepository;
+import org.agh.backend.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.List;
 @Service
 public class DoctorService {
     private final DoctorRepository doctorRepository;
+    private final SpecializationRepository specializationRepository;
 
-    public DoctorService(DoctorRepository doctorRepository) {
+    public DoctorService(DoctorRepository doctorRepository, SpecializationRepository specializationRepository) {
         this.doctorRepository = doctorRepository;
+        this.specializationRepository = specializationRepository;
     }
 
     public List<DoctorDto> getAllDoctors() {
@@ -40,12 +44,43 @@ public class DoctorService {
         return false;
     }
 
-    public boolean addDoctor(Doctor doctor) {
-        if (doctorRepository.existsByPesel(doctor.getPesel())) {
+    public boolean addDoctor(String name, String surname, String pesel, String specializationName, String address) {
+
+        if (name == null || surname == null || pesel == null || specializationName == null || address == null) {
+            throw new IllegalArgumentException("Arguments cannot be null");
+        }
+        if (doctorRepository.existsByPesel(pesel)) {
             return false;
         }
+
+
+        Specialization specialization = specializationRepository.findByName(specializationName);
+        if (specialization == null) {
+            specialization = specializationRepository.save(new Specialization(specializationName));
+        }
+
+        System.out.println(specialization.getName());
+        System.out.println(specializationName);
+        Doctor doctor = new Doctor(
+                name,
+                surname,
+                pesel,
+                specialization,
+                address
+        );
+
         doctorRepository.save(doctor);
         return true;
+    }
+
+    public boolean addDoctor(Doctor doctor) {
+        return addDoctor(
+                doctor.getName(),
+                doctor.getSurname(),
+                doctor.getPesel(),
+                doctor.getSpecialization().getName(),
+                doctor.getAddress()
+        );
     }
 
 }

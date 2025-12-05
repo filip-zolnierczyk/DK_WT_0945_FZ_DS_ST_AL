@@ -11,7 +11,7 @@ public class DoctorDetailedDto {
     public DoctorDetailedDto(Doctor doctor) {
         this.name = doctor.getName();
         this.surname = doctor.getSurname();
-        this.specialization = doctor.getSpecialization();
+        this.specialization = doctor.getSpecialization().getName();
         this.address = doctor.getAddress();
     }
 }

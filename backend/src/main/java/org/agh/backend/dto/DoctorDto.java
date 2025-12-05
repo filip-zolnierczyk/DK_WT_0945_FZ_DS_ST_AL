@@ -10,7 +10,7 @@ public class DoctorDto {
     public DoctorDto(Doctor doctor) {
         this.name = doctor.getName();
         this.surname = doctor.getSurname();
-        this.specialization = doctor.getSpecialization();
+        this.specialization = doctor.getSpecialization().getName();
     }
 
 }
