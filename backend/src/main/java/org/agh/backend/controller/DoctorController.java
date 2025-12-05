@@ -1,5 +1,6 @@
 package org.agh.backend.controller;
 
+import org.agh.backend.dto.DoctorCreateDto;
 import org.agh.backend.dto.DoctorDetailedDto;
 import org.agh.backend.dto.DoctorDto;
 import org.agh.backend.model.Doctor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RequestMapping("/doctors")
 @RestController
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DoctorController {
     private final DoctorService doctorService;
 
@@ -45,8 +46,22 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addDoctor(@RequestBody Doctor doctor) {
-        boolean added = doctorService.addDoctor(doctor);
+    public ResponseEntity<Void> addDoctor(
+            @RequestBody DoctorCreateDto doctorCreateDto
+    ) {
+        boolean added = false;
+        try {
+            added = doctorService.addDoctor(
+                    doctorCreateDto.name,
+                    doctorCreateDto.surname,
+                    doctorCreateDto.pesel,
+                    doctorCreateDto.specializationName,
+                    doctorCreateDto.address
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
         if (!added) {
             return ResponseEntity.status(409).build();
         }
