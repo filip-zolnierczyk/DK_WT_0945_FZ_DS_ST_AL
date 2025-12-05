@@ -1,23 +1,26 @@
-package org.agh.backend;
-
 import jakarta.annotation.PostConstruct;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.service.DoctorService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-// TODO: Make this optional
 @Component
 public class InitExampleDatabase {
-
     private final DoctorService doctorService;
+    private final boolean init;
 
-    public InitExampleDatabase(DoctorService doctorService) {
+    public InitExampleDatabase(DoctorService doctorService, @Value("${example.database:false}") boolean init) {
         this.doctorService = doctorService;
+        this.init = init;
     }
 
     // TODO: Make realistic data
     @PostConstruct
     public void init() {
+        if (!init) {
+            return;
+        }
+
         Doctor doctor1 = new Doctor(
                 "Name1",
                 "Surname1",
