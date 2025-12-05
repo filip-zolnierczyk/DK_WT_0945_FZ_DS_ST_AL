@@ -18,6 +18,7 @@ public class Doctor {
 
     public Doctor() {}
 
+    // TODO: Specialization as different model
     public Doctor(String name, String surname, String pesel, String specialization, String address) {
         this.name = name;
         this.surname = surname;
