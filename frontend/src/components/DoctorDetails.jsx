@@ -35,7 +35,6 @@ function DoctorDetails() {
             <div className="space-y-2">
                 <div><span className="font-medium">Imię:</span> {doctor.name}</div>
                 <div><span className="font-medium">Nazwisko:</span> {doctor.surname}</div>
-                <div><span className="font-medium">PESEL:</span> {doctor.pesel}</div>
                 <div><span className="font-medium">Adres:</span> {doctor.address}</div>
                 <div><span className="font-medium">Specjalizacja:</span> {doctor.specialization}</div>
             </div>
