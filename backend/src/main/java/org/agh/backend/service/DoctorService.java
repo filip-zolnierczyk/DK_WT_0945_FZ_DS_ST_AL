@@ -36,6 +36,14 @@ public class DoctorService {
         return new DoctorDetailedDto(doctor);
     }
 
+    public DoctorDetailedDto getDoctorByPesel(String pesel) {
+        Doctor doctor = doctorRepository.findByPesel(pesel);
+        if (doctor == null) {
+            return null;
+        }
+        return new DoctorDetailedDto(doctor);
+    }
+
     public boolean deleteDoctorById(Long id) {
         if (doctorRepository.existsById(id)) {
             doctorRepository.deleteById(id);
