@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class DoctorTests {
     @Autowired
-    DoctorService doctorService;
+    private DoctorService doctorService;
 
     @Autowired
-    SpecializationService specializationService;
+    private SpecializationService specializationService;
 
     @Test
     void addingDoctorWorks() {

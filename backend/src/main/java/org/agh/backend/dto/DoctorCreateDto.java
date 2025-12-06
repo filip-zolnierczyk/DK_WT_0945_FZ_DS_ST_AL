@@ -1,5 +1,8 @@
 package org.agh.backend.dto;
 
+import lombok.Getter;
+
+@Getter
 public class DoctorCreateDto {
     private final String name;
     private final String surname;
@@ -15,19 +18,4 @@ public class DoctorCreateDto {
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public String getPesel() {
-        return pesel;
-    }
-    public String getSpecializationName() {
-        return specializationName;
-    }
-    public String getAddress() {
-        return address;
-    }
 }

@@ -1,7 +1,9 @@
 package org.agh.backend.dto;
 
+import lombok.Getter;
 import org.agh.backend.model.Doctor;
 
+@Getter
 public class DoctorDetailedDto {
     private final Long id;
     private final String name;
@@ -17,19 +19,4 @@ public class DoctorDetailedDto {
         this.address = doctor.getAddress();
     }
 
-    public Long getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public String getSpecialization() {
-        return specialization;
-    }
-    public String getAddress() {
-        return address;
-    }
 }

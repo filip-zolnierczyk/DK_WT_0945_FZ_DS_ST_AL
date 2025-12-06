@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.agh.backend.dto.DoctorCreateDto;
 import org.agh.backend.dto.DoctorDetailedDto;
 import org.agh.backend.dto.DoctorDto;
-import org.agh.backend.model.Doctor;
 import org.agh.backend.service.DoctorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
