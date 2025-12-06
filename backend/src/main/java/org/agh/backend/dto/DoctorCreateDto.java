@@ -1,11 +1,11 @@
 package org.agh.backend.dto;
 
 public class DoctorCreateDto {
-    public String name;
-    public String surname;
-    public String pesel;
-    public String specializationName;
-    public String address;
+    private final String name;
+    private final String surname;
+    private final String pesel;
+    private final String specializationName;
+    private final String address;
 
     public DoctorCreateDto(String name, String surname, String pesel, String specialization, String address) {
         this.name = name;

@@ -120,11 +120,11 @@ public class DoctorController {
         boolean added = false;
         try {
             added = doctorService.addDoctor(
-                    doctorCreateDto.name,
-                    doctorCreateDto.surname,
-                    doctorCreateDto.pesel,
-                    doctorCreateDto.specializationName,
-                    doctorCreateDto.address
+                    doctorCreateDto.getName(),
+                    doctorCreateDto.getSurname(),
+                    doctorCreateDto.getPesel(),
+                    doctorCreateDto.getSpecializationName(),
+                    doctorCreateDto.getAddress()
             );
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
