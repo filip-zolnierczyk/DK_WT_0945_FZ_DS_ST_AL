@@ -34,7 +34,7 @@ class DoctorTests {
                 doctorCreateDto.getName(),
                 doctorCreateDto.getSurname(),
                 doctorCreateDto.getPesel(),
-                doctorCreateDto.getSpecializationName(),
+                doctorCreateDto.getSpecialization(),
                 doctorCreateDto.getAddress()
         ));
 
@@ -43,7 +43,7 @@ class DoctorTests {
                 doctorCreateDto.getName(),
                 doctorCreateDto.getSurname(),
                 doctorCreateDto.getPesel(),
-                doctorCreateDto.getSpecializationName(),
+                doctorCreateDto.getSpecialization(),
                 doctorCreateDto.getAddress()
         ));
 
@@ -67,7 +67,7 @@ class DoctorTests {
                 doctorCreateDto.getName(),
                 doctorCreateDto.getSurname(),
                 doctorCreateDto.getPesel(),
-                doctorCreateDto.getSpecializationName(),
+                doctorCreateDto.getSpecialization(),
                 doctorCreateDto.getAddress()
         );
         Long doctorId = doctorService.getDoctorByPesel("123456").getId();

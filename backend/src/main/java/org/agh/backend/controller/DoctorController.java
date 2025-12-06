@@ -122,7 +122,7 @@ public class DoctorController {
                     doctorCreateDto.getName(),
                     doctorCreateDto.getSurname(),
                     doctorCreateDto.getPesel(),
-                    doctorCreateDto.getSpecializationName(),
+                    doctorCreateDto.getSpecialization(),
                     doctorCreateDto.getAddress()
             );
         } catch (IllegalArgumentException e) {
