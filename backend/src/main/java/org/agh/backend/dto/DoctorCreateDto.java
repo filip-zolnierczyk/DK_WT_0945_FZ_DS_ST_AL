@@ -1,33 +1,21 @@
 package org.agh.backend.dto;
 
+import lombok.Getter;
+
+@Getter
 public class DoctorCreateDto {
-    public String name;
-    public String surname;
-    public String pesel;
-    public String specializationName;
-    public String address;
+    private final String name;
+    private final String surname;
+    private final String pesel;
+    private final String specialization;
+    private final String address;
 
     public DoctorCreateDto(String name, String surname, String pesel, String specialization, String address) {
         this.name = name;
         this.surname = surname;
         this.pesel = pesel;
-        this.specializationName = specialization;
+        this.specialization = specialization;
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public String getPesel() {
-        return pesel;
-    }
-    public String getSpecializationName() {
-        return specializationName;
-    }
-    public String getAddress() {
-        return address;
-    }
 }
