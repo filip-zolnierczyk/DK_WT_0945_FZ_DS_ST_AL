@@ -1,27 +1,54 @@
 package org.agh.backend;
 
-import jakarta.transaction.Transactional;
+import org.agh.backend.model.Specialization;
+import org.agh.backend.repository.DoctorRepository;
+import org.agh.backend.repository.SpecializationRepository;
 import org.agh.backend.service.DoctorService;
 import org.agh.backend.service.SpecializationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
 public class SpecializationTests {
-    @Autowired
-    DoctorService doctorService;
+    @Mock
+    private DoctorRepository doctorRepository;
 
-    @Autowired
-    SpecializationService specializationService;
+    @InjectMocks
+    private DoctorService doctorService;
+
+    @Mock
+    private SpecializationRepository specializationRepository;
+
+    @InjectMocks
+    private SpecializationService specializationService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void specializationsAreShared() {
+
+        when(specializationRepository
+                .save(new Specialization("Cardiology")))
+                .thenReturn(new Specialization("Cardiology"));
+        when(specializationRepository
+                .save(new Specialization("Neurology")))
+                .thenReturn(new Specialization("Neurology"));
+        when(specializationRepository.findByName("Cardiology"))
+                .thenReturn(null) // first doctor
+                .thenReturn(new Specialization("Cardiology")); // second doctor
+        when(specializationRepository.findByName("Neurology"))
+                .thenReturn(null); // third doctor
+
         doctorService.addDoctor(
                 "John",
                 "Doe",
@@ -44,7 +71,14 @@ public class SpecializationTests {
                 "Boulevard 789"
         );
 
-        assertEquals(2, specializationService.getAllSpecializations().size());
+        when(specializationRepository
+                .findAll())
+                .thenReturn(List.of(
+                        new Specialization("Cardiology"),
+                        new Specialization("Neurology")
+                )
+        );
 
+        assertEquals(2,specializationService.getAllSpecializations().size());
     }
 }
