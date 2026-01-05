@@ -24,4 +24,16 @@ public class Duty {
 
     private LocalDateTime start;
     private LocalDateTime end;
+
+    public void setDoctor(Doctor doctor) {
+    }
+
+    public void setOffice(Office office) {
+    }
+
+    public void setStart(LocalDateTime start) {
+    }
+
+    public void setEnd(LocalDateTime end) {
+    }
 }
