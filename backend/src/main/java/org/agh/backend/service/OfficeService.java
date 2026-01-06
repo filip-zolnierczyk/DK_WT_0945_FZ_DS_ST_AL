@@ -1,70 +1,18 @@
 package org.agh.backend.service;
 
-import org.agh.backend.model.Doctor;
-import org.agh.backend.model.Duty;
-import org.agh.backend.model.Office;
 import org.agh.backend.repository.DutyRepository;
+import org.agh.backend.repository.OfficeRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
-@Transactional
-public class DutyService {
+public class OfficeService {
+    private OfficeRepository officeRepository;
 
-    private final DutyRepository dutyRepository;
-
-    public DutyService(DutyRepository dutyRepository) {
-        this.dutyRepository = dutyRepository;
+    public OfficeService(OfficeRepository officeRepository) {
+        this.officeRepository = officeRepository;
     }
 
-    public Duty createDuty(
-            Doctor doctor,
-            Office office,
-            LocalDateTime start,
-            LocalDateTime end
-    ) {
-        // 1️⃣ Walidacja czasu
-        if (start == null || end == null) {
-            throw new IllegalArgumentException("Start and end time cannot be null");
-        }
 
-        if (!end.isAfter(start)) {
-            throw new IllegalArgumentException("End time must be after start time");
-        }
 
-        // 2️⃣ Sprawdzenie kolizji lekarza
-        boolean doctorBusy =
-                dutyRepository.existsByDoctorAndStartLessThanAndEndGreaterThan(
-                        doctor, end, start
-                );
 
-        if (doctorBusy) {
-            throw new IllegalStateException("Doctor already has a duty in this time range");
-        }
-
-        // 3️⃣ Sprawdzenie kolizji gabinetu
-        boolean officeBusy =
-                dutyRepository.existsByOfficeAndStartLessThanAndEndGreaterThan(
-                        office, end, start
-                );
-
-        if (officeBusy) {
-            throw new IllegalStateException("Office is already occupied in this time range");
-        }
-
-        // 4️⃣ Utworzenie i zapis dyżuru
-        Duty duty = new Duty();
-        duty.setDoctor(doctor);
-        duty.setOffice(office);
-        duty.setStart(start);
-        duty.setEnd(end);
-
-        return dutyRepository.save(duty);
-    }
-
-    public void deleteDuty(Long dutyId) {
-        dutyRepository.deleteById(dutyId);
-    }
 }
