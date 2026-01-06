@@ -3,6 +3,7 @@ package org.agh.backend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -14,26 +15,20 @@ public class Duty {
     @GeneratedValue
     private Long id;
 
+    @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
+    @Setter
     @ManyToOne(optional = false)
     @JoinColumn(name = "office_id", nullable = false)
     private Office office;
 
+    @Setter
     private LocalDateTime start;
+
+    @Setter
     private LocalDateTime end;
 
-    public void setDoctor(Doctor doctor) {
-    }
-
-    public void setOffice(Office office) {
-    }
-
-    public void setStart(LocalDateTime start) {
-    }
-
-    public void setEnd(LocalDateTime end) {
-    }
 }

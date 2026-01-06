@@ -1,11 +1,10 @@
 package org.agh.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter @NoArgsConstructor
 @Entity
@@ -19,6 +18,10 @@ public class Doctor {
     @ManyToOne
     private Specialization specialization;
     private String address;
+
+    @Getter
+    @OneToMany(mappedBy = "doctor")
+    private List<Duty> duties;
 
     public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
         this.name = name;

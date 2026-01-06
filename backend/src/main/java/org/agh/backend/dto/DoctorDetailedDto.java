@@ -3,6 +3,8 @@ package org.agh.backend.dto;
 import lombok.Getter;
 import org.agh.backend.model.Doctor;
 
+import java.util.List;
+
 @Getter
 public class DoctorDetailedDto {
     private final Long id;
@@ -10,6 +12,7 @@ public class DoctorDetailedDto {
     private final String surname;
     private final String specialization;
     private final String address;
+    private final List<DutyDto> duties;
 
     public DoctorDetailedDto(Doctor doctor) {
         this.id = doctor.getId();
@@ -17,6 +20,9 @@ public class DoctorDetailedDto {
         this.surname = doctor.getSurname();
         this.specialization = doctor.getSpecialization().getName();
         this.address = doctor.getAddress();
+        this.duties = doctor.getDuties().stream()
+                .map(DutyDto::new)
+                .toList();
     }
 
 }
