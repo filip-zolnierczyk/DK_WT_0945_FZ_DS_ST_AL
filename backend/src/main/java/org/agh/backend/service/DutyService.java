@@ -19,52 +19,30 @@ public class DutyService {
         this.dutyRepository = dutyRepository;
     }
 
-    public Duty createDuty(
-            Doctor doctor,
-            Office office,
-            LocalDateTime start,
-            LocalDateTime end
-    ) {
-        // Walidacja czasu
-        if (start == null || end == null) {
-            throw new IllegalArgumentException("Start and end time cannot be null");
-        }
+    public Duty createDuty(Doctor doctor, Office office, LocalDateTime start, LocalDateTime finish) {
+        if (start == null || finish == null) throw new IllegalArgumentException("Start and end cannot be null");
+        if (!finish.isAfter(start)) throw new IllegalArgumentException("End must be after start");
 
-        if (!end.isAfter(start)) {
-            throw new IllegalArgumentException("End time must be after start time");
-        }
+        boolean doctorBusy = dutyRepository.existsByDoctorAndStartLessThanAndFinishGreaterThan(doctor, finish, start);
+        if (doctorBusy) throw new IllegalStateException("Doctor already has a duty in this time range");
 
-        // Sprawdzenie kolizji lekarza
-        boolean doctorBusy =
-                dutyRepository.existsByDoctorAndStartLessThanAndEndGreaterThan(
-                        doctor, end, start
-                );
+        boolean officeBusy = dutyRepository.existsByOfficeAndStartLessThanAndFinishGreaterThan(office, finish, start);
+        if (officeBusy) throw new IllegalStateException("Office is already occupied in this time range");
 
-        if (doctorBusy) {
-            throw new IllegalStateException("Doctor already has a duty in this time range");
-        }
-
-        // Sprawdzenie kolizji gabinetu
-        boolean officeBusy =
-                dutyRepository.existsByOfficeAndStartLessThanAndEndGreaterThan(
-                        office, end, start
-                );
-
-        if (officeBusy) {
-            throw new IllegalStateException("Office is already occupied in this time range");
-        }
-
-        // Utworzenie i zapis dyżuru
         Duty duty = new Duty();
         duty.setDoctor(doctor);
         duty.setOffice(office);
         duty.setStart(start);
-        duty.setEnd(end);
+        duty.setFinish(finish);
 
         return dutyRepository.save(duty);
     }
 
     public void deleteDuty(Long dutyId) {
+        if (!dutyRepository.existsById(dutyId)) {
+            throw new IllegalStateException("Duty not found");
+        }
         dutyRepository.deleteById(dutyId);
     }
 }
+

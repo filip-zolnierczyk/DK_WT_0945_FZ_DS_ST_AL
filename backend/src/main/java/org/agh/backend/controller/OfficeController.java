@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.agh.backend.dto.DutyDto;
 import org.agh.backend.dto.OfficeCreateDto;
 import org.agh.backend.dto.OfficeDto;
 import org.agh.backend.model.Office;
@@ -95,6 +96,33 @@ public class OfficeController {
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).build(); // 409 Conflict – gabinet ma dyżury
         }
+    }
+
+    @GetMapping("/{id}/duties")
+    @Operation(
+            summary = "Get all duties in an office",
+            description = "Retrieve a list of all duties assigned to a specific office."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved duties",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DutyDto.class))),
+            @ApiResponse(responseCode = "404", description = "Office not found")
+    })
+    public ResponseEntity<List<DutyDto>> getDutiesOfOffice(@PathVariable Long id) {
+        Office office = officeService.getAllOffices().stream()
+                .filter(o -> o.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (office == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<DutyDto> duties = office.getDuties().stream()
+                .map(d -> new DutyDto(d))
+                .toList();
+
+        return ResponseEntity.ok(duties);
     }
 
 }

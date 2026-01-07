@@ -64,7 +64,7 @@ public class DutyController {
                     doctor,
                     office,
                     dutyCreateDto.getStart(),
-                    dutyCreateDto.getEnd()
+                    dutyCreateDto.getFinish()
             );
 
             return ResponseEntity.status(201).body(new DutyDto(duty));
@@ -75,4 +75,24 @@ public class DutyController {
             return ResponseEntity.status(409).build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a duty by ID",
+            description = "Deletes a duty by its unique ID"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Duty not found")
+    })
+    public ResponseEntity<Void> deleteDuty(@PathVariable Long id) {
+        try {
+            dutyService.deleteDuty(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }

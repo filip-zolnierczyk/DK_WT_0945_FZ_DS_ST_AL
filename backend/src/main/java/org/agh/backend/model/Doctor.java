@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter @NoArgsConstructor
@@ -29,6 +30,7 @@ public class Doctor {
         this.pesel = pesel;
         this.specialization = specialization;
         this.address = address;
+        this.duties = new ArrayList<>();
     }
 
 }

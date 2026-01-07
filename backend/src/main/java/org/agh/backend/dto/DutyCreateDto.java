@@ -1,6 +1,7 @@
 package org.agh.backend.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -10,5 +11,5 @@ public class DutyCreateDto {
     private Long doctorId;
     private Long officeId;
     private LocalDateTime start;
-    private LocalDateTime end;
+    private LocalDateTime finish;
 }

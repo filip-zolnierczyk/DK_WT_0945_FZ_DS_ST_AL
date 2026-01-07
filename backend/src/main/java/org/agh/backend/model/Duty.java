@@ -29,6 +29,6 @@ public class Duty {
     private LocalDateTime start;
 
     @Setter
-    private LocalDateTime end;
+    private LocalDateTime finish;
 
 }

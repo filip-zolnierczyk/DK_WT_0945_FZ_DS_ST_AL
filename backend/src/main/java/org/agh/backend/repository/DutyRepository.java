@@ -7,19 +7,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface DutyRepository extends JpaRepository<Duty, Long> {
 
-    boolean existsByDoctorAndStartLessThanAndEndGreaterThan(
+    List<Duty> findByDoctorId(Long doctorId);
+
+    boolean existsByDoctorAndStartLessThanAndFinishGreaterThan(
             Doctor doctor,
-            LocalDateTime end,
+            LocalDateTime finish,
             LocalDateTime start
     );
 
-    boolean existsByOfficeAndStartLessThanAndEndGreaterThan(
+    boolean existsByOfficeAndStartLessThanAndFinishGreaterThan(
             Office office,
-            LocalDateTime end,
+            LocalDateTime finish,
             LocalDateTime start
     );
+
 }
