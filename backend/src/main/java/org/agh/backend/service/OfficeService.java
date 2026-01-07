@@ -23,5 +23,22 @@ public class OfficeService {
     public List<Office> getAllOffices() {
         return officeRepository.findAll();
     }
+
+    public boolean deleteOfficeByIdWithCheck(Long id) {
+        Office office = officeRepository.findById(id).orElse(null);
+
+        if (office == null) {
+            return false; // gabinet nie istnieje
+        }
+
+        // sprawdzamy, czy gabinet ma dyżury
+        if (office.getDuties() != null && !office.getDuties().isEmpty()) {
+            throw new IllegalStateException("Cannot delete office with assigned duties");
+        }
+
+        officeRepository.delete(office);
+        return true;
+    }
+
 }
 

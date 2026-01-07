@@ -87,11 +87,15 @@ public class DoctorController {
             )
     })
     public ResponseEntity<Void> deleteDoctorById(@PathVariable Long id) {
-        boolean deleted = doctorService.deleteDoctorById(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = doctorService.deleteDoctorById(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build(); // lekarz ma dyżury
         }
     }
 

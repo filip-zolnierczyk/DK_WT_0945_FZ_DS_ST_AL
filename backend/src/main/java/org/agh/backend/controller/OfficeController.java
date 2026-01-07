@@ -73,4 +73,28 @@ public class OfficeController {
 
         return ResponseEntity.status(201).body(new OfficeDto(office));
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete office by ID",
+            description = "Delete a specific office from the system using its unique ID."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Successfully deleted office"),
+            @ApiResponse(responseCode = "404", description = "Office not found"),
+            @ApiResponse(responseCode = "409", description = "Office has assigned duties")
+    })
+    public ResponseEntity<Void> deleteOffice(@PathVariable Long id) {
+        try {
+            boolean deleted = officeService.deleteOfficeByIdWithCheck(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build(); // 204
+            } else {
+                return ResponseEntity.notFound().build(); // 404
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build(); // 409 Conflict – gabinet ma dyżury
+        }
+    }
+
 }
