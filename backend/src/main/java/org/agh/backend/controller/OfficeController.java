@@ -94,9 +94,19 @@ public class OfficeController {
                 return ResponseEntity.notFound().build(); // 404
             }
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).build(); // 409 Conflict – gabinet ma dyżury
+            return ResponseEntity.status(409).build(); // 409 – gabinet ma dyżury
         }
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<OfficeDto> getOfficeById(@PathVariable Long id) {
+//        return officeService.getAllOffices().stream()
+//                .filter(o -> o.getId().equals(id))
+//                .findFirst()
+//                .map(OfficeDto::new)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 
     @GetMapping("/{id}/duties")
     @Operation(

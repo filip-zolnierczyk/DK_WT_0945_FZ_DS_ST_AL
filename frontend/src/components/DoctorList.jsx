@@ -41,6 +41,9 @@ function DoctorList() {
             if (res.status === 404) {
                 throw new Error("Lekarz nie istnieje (404)");
             }
+            if (res.status === 409) {
+                throw new Error("Nie możesz usunąć lekarza, któremu przypisany jest dyżur (409)");
+            }
             if (!res.ok && res.status !== 204) {
                 throw new Error(`HTTP ${res.status}`);
             }
@@ -55,8 +58,9 @@ function DoctorList() {
     if (loading) return <div>Ładowanie...</div>;
     if (error) return <div>Błąd: {error}</div>;
     return (
-        <div className="w-[500px] border-1 rounded-md p-5 flex flex-col ">
-            <div className="grid grid-cols-4 gap-4 font-medium p-2">
+        <div className="w-[800px] border-1 rounded-md p-5 flex flex-col ">
+            <div className="grid grid-cols-5 gap-4 font-medium p-2">
+                <div>ID</div>
                 <div>Imię</div>
                 <div>Nazwisko</div>
                 <div>Specjalizacja</div>
@@ -64,7 +68,8 @@ function DoctorList() {
 
             <div className="mt-2 space-y-2">
                 {doctors.map((doctor) => (
-                    <div key={doctor.id ?? `${doctor.name}-${doctor.surname}`} className="grid grid-cols-4 gap-4 p-2">
+                    <div key={doctor.id ?? `${doctor.name}-${doctor.surname}`} className="grid grid-cols-5 gap-4 p-2">
+                        <div>{doctor.id}</div>
                         <div>{doctor.name}</div>
                         <div>{doctor.surname}</div>
                         <div>{doctor.specialization}</div>
