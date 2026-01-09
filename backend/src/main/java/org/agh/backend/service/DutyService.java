@@ -44,5 +44,9 @@ public class DutyService {
         }
         dutyRepository.deleteById(dutyId);
     }
+
+    public void deleteAllDuties() {
+        dutyRepository.deleteAll();
+    }
 }
 

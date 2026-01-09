@@ -49,7 +49,31 @@ function Layout() {
         >
           Dodaj Dyżur
         </Link>
+        <button
+          className="p-4 hover:bg-red-600 text-center border-r border-blue-700 transition-colors"
+          onClick={async (e) => {
+            e.preventDefault();
 
+            if (window.confirm("Czy na pewno usunąć wszystkie dyżury?")) {
+              try {
+                const res = await fetch("http://localhost:8080/duties/all", {
+                  method: "DELETE",
+                });
+
+                if (res.ok) {
+                  alert("Dyżury usunięte pomyślnie.");
+                  window.location.reload();
+                } else {
+                  alert("Błąd podczas usuwania.");
+                }
+              } catch (err) {
+                console.error("Błąd sieci:", err);
+              }
+            }
+          }}
+        >
+          Usuń Wszystkie Dyżury
+        </button>
       </nav>
 
       <Outlet />

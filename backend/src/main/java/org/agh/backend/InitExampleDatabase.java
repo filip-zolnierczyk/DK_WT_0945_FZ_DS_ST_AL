@@ -2,18 +2,24 @@ package org.agh.backend;
 
 import jakarta.annotation.PostConstruct;
 import org.agh.backend.service.DoctorService;
+import org.agh.backend.service.OfficeService;
+import org.agh.backend.service.PatientService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InitExampleDatabase {
     private final DoctorService doctorService;
+    private final OfficeService officeService;
+    private final PatientService patientService;
     private final boolean init;
 
-    public InitExampleDatabase(DoctorService doctorService,
+    public InitExampleDatabase(DoctorService doctorService, OfficeService officeService, PatientService patientService,
                                @Value("${example.database:false}") boolean init
     ) {
         this.doctorService = doctorService;
+        this.officeService = officeService;
+        this.patientService = patientService;
         this.init = init;
     }
 
@@ -30,6 +36,10 @@ public class InitExampleDatabase {
         doctorService.addDoctor("Tomasz", "Kowalczyk", "99034567890", "Pediatria", "ul. Krótka 7, Poznań");
         doctorService.addDoctor("Magdalena", "Kamińska", "67012349876", "Dermatologia", "ul. Lipowa 18, Łódź");
         doctorService.addDoctor("Marcin", "Zieliński", "81056723490", "Neurologia", "ul. Parkowa 11, Lublin");
+
+
+        officeService.addOffice("Prześwietlenie", "Podwale", "Gabinet do prześwietleń");
+        officeService.addOffice("Rezonans", "Krupnicza", "Gabinet do rezonansu");
 
         System.out.println("Example database initialized.");
     }
