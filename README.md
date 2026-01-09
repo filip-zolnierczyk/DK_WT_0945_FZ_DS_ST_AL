@@ -8,7 +8,7 @@ Projekt został podzielony na dwie części - frontend oraz backend, a komunikac
 
 ### Schemat bazy danych
 
-![Schemat bazy danych](backend/db_schema.png)
+![Schemat bazy danych](backend/db_schema_v2.png)
 
 ### Frontend
 
@@ -43,7 +43,7 @@ npm run dev
 ```
 
 - Backend
-Kompilujemy kod przy użyciu Javy, a zarządzanie zależnościami realizowane jest przez Gradle.
+  Kompilujemy kod przy użyciu Javy, a zarządzanie zależnościami realizowane jest przez Gradle.
 
 ## Generowanie przykładowych danych
 
@@ -61,7 +61,7 @@ Api jest dostępne na backendzie z adresu `/swagger-ui.html`. Domyślnie jest to
 
 ## Opis wywołania funkcjonalności:
 
-Na stronie głównej znajduje się lista wszystkich lekarzy wraz z przyciskami które umożliwiają wykonanie określonej akcji na danym lekarzu.
+Na stronie głównej (zakładka Lekarze) znajduje się lista wszystkich lekarzy wraz z przyciskami które umożliwiają wykonanie określonej akcji na danym lekarzu.
 
 <img width="500" alt="Zrzut ekranu 2025-12-15 213442" src="https://github.com/user-attachments/assets/5b28d7b8-704c-4497-8af7-27442745cf3c" />
 
@@ -73,8 +73,17 @@ Aby dodać nowego lekarza należy wcisnąć przycisk "Dodaj lekarza", zostanie w
 
 <img width="500" alt="Zrzut ekranu 2025-12-15 213604" src="https://github.com/user-attachments/assets/b425ece9-9e85-44e3-9e0e-a7faa446fa2a" />
 
+Analogicznie sytuacja ma się z Pacjentami - aby dodać pacjenta należy wypełnić formularz pojawiający się po wciśnięciu przycisky 'Dodaj Pacjenta'.
 
+Listę wszystkich pacjentów można ujrzeć po wciśnięciu przycisku 'Pacjenci'.
+Każdego pacjenta można usunąć wciskając czerwony przycisk z napisem 'usuń'.
 
+Również analogicznie sytuacja ma się z gabinetami - możemy je dodawać, usuwać, przeglądać wszystkie.
+W dodatku przy każdym gabinecie wyświetla się przycisk 'dyżury' - po jego wciśnięciu wyświetlą nam się dokładne szczegóły na temat danego gabinetu oraz rozpiska wszystkich zaplanowanych w nim dyżurów.
+
+Przycisk 'Dodaj dyżur' przekierowuje nas do formularza, gdzie możemy dodać dyżur poprzez wybranie lekarza, gabinetu oraz daty początku i rozpoczacia dyżuru.
+
+Przycisk 'Usuń wszystkie dyżury' usuwa wszystkie aktualnie zaplanowane dyżury (w razie nagłego bankructwa szpitala lub innych niespodziewanych sytuacji)
 
 ## Autorzy
 
