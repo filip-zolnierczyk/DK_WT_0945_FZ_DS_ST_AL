@@ -31,6 +31,13 @@ public class DutyService {
         this.officeRepository = officeRepository;
     }
 
+    /**
+     * Adds a new duty
+     * @param dutyCreateDto includes data identifying doctor and office; specifies start and end times
+     * @return dutyDto if duty created successfully
+     * @throws IllegalArgumentException if input is incorrect
+     * @throws IllegalStateException if doctor/office is busy and cannot be present in duty to be created
+     */
     public DutyDto addDuty(DutyCreateDto dutyCreateDto) {
         if (dutyCreateDto.getStart() == null || dutyCreateDto.getFinish() == null) {
             throw new IllegalArgumentException("Start and end cannot be null");
@@ -72,6 +79,11 @@ public class DutyService {
         return new DutyDto(dutyRepository.save(duty));
     }
 
+    /**
+     * Deletes a duty by its id
+     * @param dutyId the ID of the duty to be deleted
+     * @throws IllegalStateException if duty does not exist
+     */
     public void deleteDuty(Long dutyId) {
         if (!dutyRepository.existsById(dutyId)) {
             throw new IllegalStateException("Duty not found");
@@ -79,6 +91,9 @@ public class DutyService {
         dutyRepository.deleteById(dutyId);
     }
 
+    /**
+     * Deletes all duties
+     */
     public void deleteAllDuties() {
         dutyRepository.deleteAll();
     }

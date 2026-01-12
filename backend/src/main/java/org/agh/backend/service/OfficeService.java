@@ -1,11 +1,8 @@
 package org.agh.backend.service;
 
-import org.agh.backend.dto.DoctorDetailedDto;
 import org.agh.backend.dto.DutyDto;
 import org.agh.backend.dto.OfficeDto;
-import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Office;
-import org.agh.backend.repository.DutyRepository;
 import org.agh.backend.repository.OfficeRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +17,35 @@ public class OfficeService {
         this.officeRepository = officeRepository;
     }
 
+    /**
+     * Adds office
+     * @param name name of the office
+     * @param address address of the office
+     * @param description description of the office
+     * @return OfficeDto representing the office
+     */
     public OfficeDto addOffice(String name, String address, String description) {
         return new OfficeDto(officeRepository.save(new Office(name, address, description)));
     }
 
-    public List<Office> getAllOffices() {
-        return officeRepository.findAll();
+    /**
+     * Retrieves information about all offices
+     * @return list of all OfficeDto
+     */
+    public List<OfficeDto> getAllOffices() {
+        return officeRepository.findAll()
+                .stream()
+                .map(OfficeDto::new)
+                .toList();
     }
 
+    /**
+     * Deletes office
+     * Checks if no duties belong to that office
+     * @param id the ID of the office
+     * @return true if successfully deleted, false if it does not exist
+     * @throws IllegalStateException if any duties belong to the office
+     */
     public boolean deleteOfficeByIdWithCheck(Long id) {
         Office office = officeRepository.findById(id).orElse(null);
 
@@ -44,7 +62,12 @@ public class OfficeService {
         return true;
     }
 
-    public OfficeDto getOfficeById(Long id) {
+    /**
+     * Retrieves OfficeDto by ID
+     * @param id the ID of the office
+     * @return OfficeDto representing the office
+     */
+    public OfficeDto getOfficeDtoById(Long id) {
         Office office = officeRepository.findById(id).orElse(null);
         if (office == null) {
             return null;
@@ -52,11 +75,18 @@ public class OfficeService {
         return new OfficeDto(office);
     }
 
+    private Office getOfficeById(Long id) {
+        return officeRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Retrieves all duties of an office
+     * @param id the ID of the office
+     * @return list of duties of an office if it exists
+     * @throws IllegalStateException if office does not exist
+     */
     public List<DutyDto> getDutiesOfOffice(Long id) {
-        Office office = getAllOffices().stream()
-                .filter(o -> o.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        Office office = getOfficeById(id);
 
         if (office == null) {
             throw new IllegalStateException("Office does not exist");

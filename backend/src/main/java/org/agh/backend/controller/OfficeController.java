@@ -41,10 +41,7 @@ public class OfficeController {
             )
     )
     public ResponseEntity<List<OfficeDto>> getAllOffices() {
-        List<OfficeDto> offices = officeService.getAllOffices()
-                .stream()
-                .map(OfficeDto::new)
-                .toList();
+        List<OfficeDto> offices = officeService.getAllOffices();
 
         return ResponseEntity.ok(offices);
     }
@@ -98,7 +95,7 @@ public class OfficeController {
     }
 
 //    @GetMapping("/{id}")
-//    public ResponseEntity<OfficeDto> getOfficeById(@PathVariable Long id) {
+//    public ResponseEntity<OfficeDto> getOfficeDtoById(@PathVariable Long id) {
 //        return officeService.getAllOffices().stream()
 //                .filter(o -> o.getId().equals(id))
 //                .findFirst()

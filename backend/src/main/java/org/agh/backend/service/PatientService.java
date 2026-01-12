@@ -16,14 +16,29 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
+    /**
+     * Retrieves all patients
+     * @return list that includes all patients
+     */
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
+    /**
+     * Retrieves a patient by ID
+     * @param id the ID of the patient
+     * @return patient
+     */
     public Patient getPatientById(Long id) {
         return patientRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Adds patient
+     * @param dto representing patient's data
+     * @return true if added successfully, false otherwise
+     * @throws IllegalStateException if any field is null
+     */
     public boolean addPatient(PatientCreateDto dto) {
         if (dto.getName() == null || dto.getSurname() == null || dto.getPesel() == null || dto.getAddress() == null) {
             throw new IllegalArgumentException("Fields cannot be null");
@@ -44,6 +59,11 @@ public class PatientService {
         return true;
     }
 
+    /**
+     * Deletes a patient by ID
+     * @param id the ID of the patient to be deleted
+     * @return true if deleted, false otherwise
+     */
     public boolean deletePatient(Long id) {
         if (patientRepository.existsById(id)) {
             patientRepository.deleteById(id);
