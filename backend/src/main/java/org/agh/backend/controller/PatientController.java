@@ -5,13 +5,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
-import org.agh.backend.model.Patient;
 import org.agh.backend.service.PatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/patients")
 @RestController
@@ -30,11 +28,8 @@ public class PatientController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of patients")
     })
     public ResponseEntity<List<PatientDto>> getAllPatients() {
-        List<PatientDto> patients = patientService.getAllPatients()
-                .stream()
-                .map(PatientDto::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(patients);
+        List<PatientDto> patientDtos = patientService.getAllPatients();
+        return ResponseEntity.ok(patientDtos);
     }
 
     @GetMapping("/{id}")
@@ -44,11 +39,11 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id) {
-        Patient patient = patientService.getPatientById(id);
-        if (patient == null) {
+        try {
+            return ResponseEntity.ok(patientService.getPatientById(id));
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(new PatientDto(patient));
     }
 
     @PostMapping

@@ -1,6 +1,7 @@
 package org.agh.backend.service;
 
 import org.agh.backend.dto.PatientCreateDto;
+import org.agh.backend.dto.PatientDto;
 import org.agh.backend.model.Patient;
 import org.agh.backend.repository.PatientRepository;
 import org.springframework.stereotype.Service;
@@ -18,19 +19,26 @@ public class PatientService {
 
     /**
      * Retrieves all patients
-     * @return list that includes all patients
+     * @return list of PatientDto that representing all patients
      */
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+    public List<PatientDto> getAllPatients() {
+        return patientRepository.findAll()
+                .stream()
+                .map(PatientDto::new)
+                .toList();
     }
 
     /**
      * Retrieves a patient by ID
      * @param id the ID of the patient
-     * @return patient
+     * @return patientDto representing the patient
      */
-    public Patient getPatientById(Long id) {
-        return patientRepository.findById(id).orElse(null);
+    public PatientDto getPatientById(Long id) {
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if  (patient == null) {
+            throw new IllegalArgumentException("Patient with id " + id + " does not exist");
+        }
+        return new PatientDto(patient);
     }
 
     /**
