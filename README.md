@@ -8,7 +8,8 @@ Projekt został podzielony na dwie części - frontend oraz backend, a komunikac
 
 ### Schemat bazy danych
 
-![Schemat bazy danych](backend/db_schema_v2.png)
+<img width="646" height="933" alt="Zrzut ekranu 2026-01-12 225528" src="https://github.com/user-attachments/assets/65ba682f-9560-4276-887f-2ae4580070f8" />
+
 
 ### Frontend
 
