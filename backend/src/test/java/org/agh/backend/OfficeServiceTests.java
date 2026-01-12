@@ -53,7 +53,7 @@ class OfficeServiceTests {
                 new Office("B", "Addr B", null)
         ));
 
-        List<Office> offices = officeService.getAllOffices();
+        List<OfficeDto> offices = officeService.getAllOffices();
 
         assertEquals(2, offices.size());
         assertEquals("A", offices.get(0).getName());

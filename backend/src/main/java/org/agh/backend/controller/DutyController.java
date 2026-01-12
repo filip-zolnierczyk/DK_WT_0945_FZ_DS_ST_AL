@@ -48,7 +48,7 @@ public class DutyController {
             return ResponseEntity.notFound().build();
         }
 
-        if (officeService.getOfficeById(dutyCreateDto.getOfficeId()) == null) {
+        if (officeService.getOfficeDtoById(dutyCreateDto.getOfficeId()) == null) {
             return ResponseEntity.notFound().build();
         }
 
