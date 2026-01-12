@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.agh.backend.dto.DutyDto;
 import org.agh.backend.dto.OfficeCreateDto;
 import org.agh.backend.dto.OfficeDto;
-import org.agh.backend.model.Office;
 import org.agh.backend.service.OfficeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,13 +65,13 @@ public class OfficeController {
             return ResponseEntity.badRequest().build();
         }
 
-        Office office = officeService.addOffice(
+        OfficeDto officeDto = officeService.addOffice(
                 officeCreateDto.getName(),
                 officeCreateDto.getAddress(),
                 officeCreateDto.getDescription()
         );
 
-        return ResponseEntity.status(201).body(new OfficeDto(office));
+        return ResponseEntity.status(201).body(officeDto);
     }
 
     @DeleteMapping("/{id}")
@@ -119,20 +118,12 @@ public class OfficeController {
             @ApiResponse(responseCode = "404", description = "Office not found")
     })
     public ResponseEntity<List<DutyDto>> getDutiesOfOffice(@PathVariable Long id) {
-        Office office = officeService.getAllOffices().stream()
-                .filter(o -> o.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-
-        if (office == null) {
+        try {
+            return ResponseEntity.ok(officeService.getDutiesOfOffice(id));
+        } catch(IllegalStateException e) {
             return ResponseEntity.notFound().build();
         }
 
-        List<DutyDto> duties = office.getDuties().stream()
-                .map(d -> new DutyDto(d))
-                .toList();
-
-        return ResponseEntity.ok(duties);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.agh.backend;
 
+import org.agh.backend.dto.OfficeDto;
 import org.agh.backend.model.Duty;
 import org.agh.backend.model.Office;
 import org.agh.backend.repository.OfficeRepository;
@@ -37,7 +38,7 @@ class OfficeServiceTests {
 
         when(officeRepository.save(any(Office.class))).thenReturn(office);
 
-        Office saved = officeService.addOffice("Main Office", "Street 123", "Main description");
+        OfficeDto saved = officeService.addOffice("Main Office", "Street 123", "Main description");
 
         assertNotNull(saved);
         assertEquals("Main Office", saved.getName());

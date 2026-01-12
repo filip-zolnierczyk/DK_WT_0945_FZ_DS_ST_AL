@@ -1,6 +1,7 @@
 package org.agh.backend.service;
 
 import org.agh.backend.dto.DoctorDetailedDto;
+import org.agh.backend.dto.DutyDto;
 import org.agh.backend.dto.OfficeDto;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Office;
@@ -19,8 +20,8 @@ public class OfficeService {
         this.officeRepository = officeRepository;
     }
 
-    public Office addOffice(String name, String address, String description) {
-        return officeRepository.save(new Office(name, address, description));
+    public OfficeDto addOffice(String name, String address, String description) {
+        return new OfficeDto(officeRepository.save(new Office(name, address, description)));
     }
 
     public List<Office> getAllOffices() {
@@ -49,5 +50,20 @@ public class OfficeService {
             return null;
         }
         return new OfficeDto(office);
+    }
+
+    public List<DutyDto> getDutiesOfOffice(Long id) {
+        Office office = getAllOffices().stream()
+                .filter(o -> o.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (office == null) {
+            throw new IllegalStateException("Office does not exist");
+        }
+
+        return office.getDuties().stream()
+                .map(DutyDto::new)
+                .toList();
     }
 }
