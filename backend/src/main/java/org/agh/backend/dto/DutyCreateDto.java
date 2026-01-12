@@ -8,8 +8,19 @@ import java.time.LocalDateTime;
 @Getter
 public class DutyCreateDto {
 
-    private Long doctorId;
-    private Long officeId;
-    private LocalDateTime start;
-    private LocalDateTime finish;
+    private final Long doctorId;
+    private final Long officeId;
+    private final LocalDateTime start;
+    private final LocalDateTime finish;
+
+    public DutyCreateDto(Long doctorId,
+                         Long officeId,
+                         LocalDateTime start,
+                         LocalDateTime finish
+    ) {
+        this.doctorId = doctorId;
+        this.officeId = officeId;
+        this.start = start;
+        this.finish = finish;
+    }
 }

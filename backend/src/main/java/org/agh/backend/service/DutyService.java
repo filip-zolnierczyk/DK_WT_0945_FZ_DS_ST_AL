@@ -1,9 +1,13 @@
 package org.agh.backend.service;
 
+import org.agh.backend.dto.DutyCreateDto;
+import org.agh.backend.dto.DutyDto;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Duty;
 import org.agh.backend.model.Office;
+import org.agh.backend.repository.DoctorRepository;
 import org.agh.backend.repository.DutyRepository;
+import org.agh.backend.repository.OfficeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,28 +18,58 @@ import java.time.LocalDateTime;
 public class DutyService {
 
     private final DutyRepository dutyRepository;
+    private final DoctorRepository doctorRepository;
+    private final OfficeRepository officeRepository;
 
-    public DutyService(DutyRepository dutyRepository) {
+    public DutyService(
+            DutyRepository dutyRepository,
+            DoctorRepository doctorRepository,
+            OfficeRepository officeRepository
+    ) {
         this.dutyRepository = dutyRepository;
+        this.doctorRepository = doctorRepository;
+        this.officeRepository = officeRepository;
     }
 
-    public Duty createDuty(Doctor doctor, Office office, LocalDateTime start, LocalDateTime finish) {
-        if (start == null || finish == null) throw new IllegalArgumentException("Start and end cannot be null");
-        if (!finish.isAfter(start)) throw new IllegalArgumentException("End must be after start");
+    public DutyDto addDuty(DutyCreateDto dutyCreateDto) {
+        if (dutyCreateDto.getStart() == null || dutyCreateDto.getFinish() == null) {
+            throw new IllegalArgumentException("Start and end cannot be null");
+        }
+        if (!dutyCreateDto.getFinish().isAfter(dutyCreateDto.getStart())) {
+            throw new IllegalArgumentException("End must be after start");
+        }
 
-        boolean doctorBusy = dutyRepository.existsByDoctorAndStartLessThanAndFinishGreaterThan(doctor, finish, start);
-        if (doctorBusy) throw new IllegalStateException("Doctor already has a duty in this time range");
+        Doctor doctor = doctorRepository.findById(dutyCreateDto.getDoctorId())
+                .orElse(null);
 
-        boolean officeBusy = dutyRepository.existsByOfficeAndStartLessThanAndFinishGreaterThan(office, finish, start);
+        Office office = officeRepository.findById(dutyCreateDto.getOfficeId())
+                .orElse(null);
+
+        if (doctor == null || office == null) {
+            throw new IllegalArgumentException("Doctor/Office cannot be null");
+        }
+
+        boolean doctorBusy = dutyRepository
+                .existsByDoctorAndStartLessThanAndFinishGreaterThan(
+                        doctor,
+                        dutyCreateDto.getFinish(),
+                        dutyCreateDto.getStart()
+                );
+        if (doctorBusy) {
+            throw new IllegalStateException("Doctor already has a duty in this time range");
+        }
+
+        boolean officeBusy = dutyRepository.
+                existsByOfficeAndStartLessThanAndFinishGreaterThan(office, dutyCreateDto.getFinish(), dutyCreateDto.getStart());
         if (officeBusy) throw new IllegalStateException("Office is already occupied in this time range");
 
         Duty duty = new Duty();
         duty.setDoctor(doctor);
         duty.setOffice(office);
-        duty.setStart(start);
-        duty.setFinish(finish);
+        duty.setStart(dutyCreateDto.getStart());
+        duty.setFinish(dutyCreateDto.getFinish());
 
-        return dutyRepository.save(duty);
+        return new DutyDto(dutyRepository.save(duty));
     }
 
     public void deleteDuty(Long dutyId) {

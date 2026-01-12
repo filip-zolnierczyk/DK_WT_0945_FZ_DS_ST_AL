@@ -5,12 +5,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.agh.backend.dto.DutyCreateDto;
 import org.agh.backend.dto.DutyDto;
-import org.agh.backend.model.Doctor;
-import org.agh.backend.model.Duty;
-import org.agh.backend.model.Office;
-import org.agh.backend.repository.DoctorRepository;
-import org.agh.backend.repository.OfficeRepository;
+import org.agh.backend.service.DoctorService;
 import org.agh.backend.service.DutyService;
+import org.agh.backend.service.OfficeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,17 +17,17 @@ import org.springframework.web.bind.annotation.*;
 public class DutyController {
 
     private final DutyService dutyService;
-    private final DoctorRepository doctorRepository;
-    private final OfficeRepository officeRepository;
+    private final DoctorService doctorService;
+    private final OfficeService officeService;
 
     public DutyController(
             DutyService dutyService,
-            DoctorRepository doctorRepository,
-            OfficeRepository officeRepository
+            DoctorService doctorService,
+            OfficeService officeService
     ) {
         this.dutyService = dutyService;
-        this.doctorRepository = doctorRepository;
-        this.officeRepository = officeRepository;
+        this.doctorService = doctorService;
+        this.officeService = officeService;
     }
 
     @PostMapping
@@ -47,28 +44,17 @@ public class DutyController {
     public ResponseEntity<DutyDto> addDuty(
             @RequestBody DutyCreateDto dutyCreateDto
     ) {
-        Doctor doctor = doctorRepository.findById(dutyCreateDto.getDoctorId())
-                .orElse(null);
-        if (doctor == null) {
+        if (doctorService.getDoctorById(dutyCreateDto.getDoctorId()) == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Office office = officeRepository.findById(dutyCreateDto.getOfficeId())
-                .orElse(null);
-        if (office == null) {
+        if (officeService.getOfficeById(dutyCreateDto.getOfficeId()) == null) {
             return ResponseEntity.notFound().build();
         }
 
         try {
-            Duty duty = dutyService.createDuty(
-                    doctor,
-                    office,
-                    dutyCreateDto.getStart(),
-                    dutyCreateDto.getFinish()
-            );
-
-            return ResponseEntity.status(201).body(new DutyDto(duty));
-
+            DutyDto dutyDto = dutyService.addDuty(dutyCreateDto);
+            return ResponseEntity.status(201).body(dutyDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (IllegalStateException e) {

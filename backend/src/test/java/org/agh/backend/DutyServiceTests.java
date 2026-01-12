@@ -1,9 +1,14 @@
 package org.agh.backend;
 
+import org.agh.backend.dto.DoctorCreateDto;
+import org.agh.backend.dto.DutyCreateDto;
+import org.agh.backend.dto.DutyDto;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Duty;
 import org.agh.backend.model.Office;
+import org.agh.backend.repository.DoctorRepository;
 import org.agh.backend.repository.DutyRepository;
+import org.agh.backend.repository.OfficeRepository;
 import org.agh.backend.service.DutyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,6 +27,12 @@ class DutyServiceTests {
 
     @Mock
     private DutyRepository dutyRepository;
+
+    @Mock
+    private DoctorRepository doctorRepository;
+
+    @Mock
+    private OfficeRepository officeRepository;
 
     @InjectMocks
     private DutyService dutyService;
@@ -48,38 +60,56 @@ class DutyServiceTests {
         when(dutyRepository.existsByOfficeAndStartLessThanAndFinishGreaterThan(office, end, start))
                 .thenReturn(false);
         when(dutyRepository.save(any(Duty.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(doctorRepository.findById(any()))
+                .thenReturn(Optional.of(doctor));
+        when(officeRepository.findById(any()))
+                .thenReturn(Optional.of(office));
 
-        Duty duty = dutyService.createDuty(doctor, office, start, end);
+        DutyCreateDto dutyCreateDto = new DutyCreateDto(doctor.getId(), office.getId(), start, end);
 
-        assertNotNull(duty);
-        assertEquals(doctor, duty.getDoctor());
-        assertEquals(office, duty.getOffice());
-        assertEquals(start, duty.getStart());
-        assertEquals(end, duty.getEnd());
+        DutyDto dutyDto = dutyService.addDuty(dutyCreateDto);
+
+        assertNotNull(dutyDto);
+        assertEquals(doctor.getName(), dutyDto.getDoctorName());
+        assertEquals(office.getName(), dutyDto.getOfficeName());
+        assertEquals(start, dutyDto.getStart());
+        assertEquals(end, dutyDto.getFinish());
     }
 
     @Test
     void createDutyFailsWhenStartOrEndNull() {
+        DutyCreateDto dutyCreateDto1 = new DutyCreateDto(doctor.getId(), office.getId(), null, end);
+        DutyCreateDto dutyCreateDto2 = new DutyCreateDto(doctor.getId(), office.getId(), start, null);
+
         assertThrows(IllegalArgumentException.class,
-                () -> dutyService.createDuty(doctor, office, null, end));
+                () -> dutyService.addDuty(dutyCreateDto1));
         assertThrows(IllegalArgumentException.class,
-                () -> dutyService.createDuty(doctor, office, start, null));
+                () -> dutyService.addDuty(dutyCreateDto2));
     }
 
     @Test
     void createDutyFailsWhenEndBeforeStart() {
         LocalDateTime badEnd = start.minusHours(1);
+
+        DutyCreateDto dutyCreateDto = new DutyCreateDto(doctor.getId(), office.getId(), start, badEnd);
+
         assertThrows(IllegalArgumentException.class,
-                () -> dutyService.createDuty(doctor, office, start, badEnd));
+                () -> dutyService.addDuty(dutyCreateDto));
     }
 
     @Test
     void createDutyFailsWhenDoctorBusy() {
         when(dutyRepository.existsByDoctorAndStartLessThanAndFinishGreaterThan(doctor, end, start))
                 .thenReturn(true);
+        when(doctorRepository.findById(any()))
+                .thenReturn(Optional.of(doctor));
+        when(officeRepository.findById(any()))
+                .thenReturn(Optional.of(office));
+
+        DutyCreateDto dutyCreateDto = new DutyCreateDto(doctor.getId(), office.getId(), start, end);
 
         assertThrows(IllegalStateException.class,
-                () -> dutyService.createDuty(doctor, office, start, end));
+                () -> dutyService.addDuty(dutyCreateDto));
     }
 
     @Test
@@ -88,9 +118,15 @@ class DutyServiceTests {
                 .thenReturn(false);
         when(dutyRepository.existsByOfficeAndStartLessThanAndFinishGreaterThan(office, end, start))
                 .thenReturn(true);
+        when(doctorRepository.findById(any()))
+                .thenReturn(Optional.of(doctor));
+        when(officeRepository.findById(any()))
+                .thenReturn(Optional.of(office));
+
+        DutyCreateDto dutyCreateDto = new DutyCreateDto(doctor.getId(), office.getId(), start, end);
 
         assertThrows(IllegalStateException.class,
-                () -> dutyService.createDuty(doctor, office, start, end));
+                () -> dutyService.addDuty(dutyCreateDto));
     }
 
     @Test

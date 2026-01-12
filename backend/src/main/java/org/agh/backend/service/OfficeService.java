@@ -1,5 +1,8 @@
 package org.agh.backend.service;
 
+import org.agh.backend.dto.DoctorDetailedDto;
+import org.agh.backend.dto.OfficeDto;
+import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Office;
 import org.agh.backend.repository.DutyRepository;
 import org.agh.backend.repository.OfficeRepository;
@@ -40,5 +43,11 @@ public class OfficeService {
         return true;
     }
 
+    public OfficeDto getOfficeById(Long id) {
+        Office office = officeRepository.findById(id).orElse(null);
+        if (office == null) {
+            return null;
+        }
+        return new OfficeDto(office);
+    }
 }
-
