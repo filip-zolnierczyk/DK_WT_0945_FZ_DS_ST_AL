@@ -6,7 +6,7 @@ Projekt obejmuje podstawowe operacje związane z dodawaniem, usuwaniem oraz odcz
 
 Projekt został podzielony na dwie części - frontend oraz backend, a komunikacja między nimi odbywa się poprzez zapytania Rest API. Backend tworzy bazę danych w pliku `database.mv.db` znajdującego się w katalogu `backend`.
 
-### Schemat bazy danych
+### UML klas modelu domenowego
 
 <img width="646" height="933" alt="Zrzut ekranu 2026-01-12 225528" src="https://github.com/user-attachments/assets/65ba682f-9560-4276-887f-2ae4580070f8" />
 
