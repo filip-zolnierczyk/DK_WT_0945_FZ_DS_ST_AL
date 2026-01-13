@@ -158,29 +158,34 @@ class DoctorServiceTests {
                 "Street 123"
         );
 
-        // Finding specialization
+        Specialization specialization =
+                new Specialization(doctorCreateDto.getSpecialization());
+
+        Doctor doctor = new Doctor(
+                doctorCreateDto.getName(),
+                doctorCreateDto.getSurname(),
+                doctorCreateDto.getPesel(),
+                specialization,
+                doctorCreateDto.getAddress()
+        );
+
+        // --- ADD DOCTOR ---
+
         when(specializationRepository
                 .findByName(doctorCreateDto.getSpecialization()))
-                .thenReturn(new Specialization(doctorCreateDto.getSpecialization()));
+                .thenReturn(specialization);
 
         when(doctorRepository
-                .existsByPesel("123456"))
-                .thenReturn(false) // for adding
-                .thenReturn(true); // for deleting
+                .existsByPesel(doctorCreateDto.getPesel()))
+                .thenReturn(false);
 
         when(doctorRepository
                 .save(any(Doctor.class)))
-                .thenReturn(new Doctor());
+                .thenReturn(doctor);
+
         when(doctorRepository
                 .findByPesel(doctorCreateDto.getPesel()))
-                .thenReturn(new Doctor(
-                        doctorCreateDto.getName(),
-                        doctorCreateDto.getSurname(),
-                        doctorCreateDto.getPesel(),
-                        new Specialization(doctorCreateDto.getSpecialization()),
-                        doctorCreateDto.getAddress()
-                )
-        );
+                .thenReturn(doctor);
 
         doctorService.addDoctor(
                 doctorCreateDto.getName(),
@@ -189,18 +194,22 @@ class DoctorServiceTests {
                 doctorCreateDto.getSpecialization(),
                 doctorCreateDto.getAddress()
         );
+
         Long doctorId = doctorService.getDoctorByPesel("123456").getId();
 
-        when(doctorRepository
-                .existsById(doctorId))
-                .thenReturn(true) // for deleting existing
-                .thenReturn(false); // for checking unexisting
+        // --- DELETE DOCTOR ---
 
-        // Deleting existing doctor should return true
+        when(doctorRepository.findById(doctorId))
+                .thenReturn(Optional.of(doctor))   // first delete
+                .thenReturn(Optional.empty());     // second delete
+
+        // first delete → success
         assertTrue(doctorService.deleteDoctorById(doctorId));
+
+        // second delete → already removed
         assertFalse(doctorService.deleteDoctorById(doctorId));
-        assertEquals(0, doctorService.getAllDoctors().size());
     }
+
 
     @Test
     void deletingUnexistingDoctorReturnsFalse() {

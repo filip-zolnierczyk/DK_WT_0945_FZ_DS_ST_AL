@@ -64,12 +64,20 @@ public class DoctorService {
      * @return true if the doctor was deleted, false if not found
      */
     public boolean deleteDoctorById(Long id) {
-        if (doctorRepository.existsById(id)) {
-            doctorRepository.deleteById(id);
-            return true;
+        Doctor doctor = doctorRepository.findById(id).orElse(null);
+
+        if (doctor == null) {
+            return false;
         }
-        return false;
+
+        if (!doctor.getDuties().isEmpty()) {
+            throw new IllegalStateException("Doctor has assigned duties");
+        }
+
+        doctorRepository.delete(doctor);
+        return true;
     }
+
 
     /**
      * Adds a new doctor if a doctor with the same PESEL does not already exist.

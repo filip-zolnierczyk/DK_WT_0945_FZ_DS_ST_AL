@@ -1,0 +1,91 @@
+package org.agh.backend.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.agh.backend.dto.DutyCreateDto;
+import org.agh.backend.dto.DutyDto;
+import org.agh.backend.service.DoctorService;
+import org.agh.backend.service.DutyService;
+import org.agh.backend.service.OfficeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequestMapping("/duties")
+@RestController
+@CrossOrigin(origins = "http://localhost:5173")
+public class DutyController {
+
+    private final DutyService dutyService;
+    private final DoctorService doctorService;
+    private final OfficeService officeService;
+
+    public DutyController(
+            DutyService dutyService,
+            DoctorService doctorService,
+            OfficeService officeService
+    ) {
+        this.dutyService = dutyService;
+        this.doctorService = doctorService;
+        this.officeService = officeService;
+    }
+
+    @PostMapping
+    @Operation(
+            summary = "Add a new duty",
+            description = "Create a new duty for a doctor in a specific office and time range."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Successfully created a new duty"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Doctor or office not found"),
+            @ApiResponse(responseCode = "409", description = "Time conflict for doctor or office")
+    })
+    public ResponseEntity<DutyDto> addDuty(
+            @RequestBody DutyCreateDto dutyCreateDto
+    ) {
+        if (doctorService.getDoctorById(dutyCreateDto.getDoctorId()) == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (officeService.getOfficeDtoById(dutyCreateDto.getOfficeId()) == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            DutyDto dutyDto = dutyService.addDuty(dutyCreateDto);
+            return ResponseEntity.status(201).body(dutyDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a duty by ID",
+            description = "Deletes a duty by its unique ID"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Duty not found")
+    })
+    public ResponseEntity<Void> deleteDuty(@PathVariable Long id) {
+        try {
+            dutyService.deleteDuty(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/all")
+    @Operation(summary = "Delete all duties", description = "Removes all duties from the database")
+    public ResponseEntity<Void> deleteAllDuties() {
+        dutyService.deleteAllDuties();
+        return ResponseEntity.noContent().build();
+    }
+
+
+}

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.agh.backend.dto.DoctorCreateDto;
 import org.agh.backend.dto.DoctorDetailedDto;
 import org.agh.backend.dto.DoctorDto;
+import org.agh.backend.dto.DutyDto;
 import org.agh.backend.service.DoctorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,11 +88,15 @@ public class DoctorController {
             )
     })
     public ResponseEntity<Void> deleteDoctorById(@PathVariable Long id) {
-        boolean deleted = doctorService.deleteDoctorById(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = doctorService.deleteDoctorById(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build(); // lekarz ma dyżury
         }
     }
 
@@ -135,6 +140,26 @@ public class DoctorController {
         }
         return ResponseEntity.status(201).build();
     }
+
+    @GetMapping("/{id}/duties")
+    @Operation(
+            summary = "Get all duties of a doctor",
+            description = "Retrieve a list of all duties assigned to a specific doctor."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved duties",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DutyDto.class))),
+            @ApiResponse(responseCode = "404", description = "Doctor not found")
+    })
+    public ResponseEntity<List<DutyDto>> getDutiesOfDoctor(@PathVariable Long id) {
+        DoctorDetailedDto doctorDetailedDto = doctorService.getDoctorById(id);
+        if (doctorDetailedDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(doctorDetailedDto.getDuties());
+    }
+
 
 
 }

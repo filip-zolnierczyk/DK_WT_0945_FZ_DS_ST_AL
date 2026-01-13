@@ -9,28 +9,23 @@ import java.util.List;
 
 @Getter @NoArgsConstructor
 @Entity
-public class Doctor {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-    private String surname;
-    private String pesel;
-    @ManyToOne
-    private Specialization specialization;
-    private String address;
+public class Office {
 
-    @Getter
-    @OneToMany(mappedBy = "doctor")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String address;
+    private String description;
+
+    @OneToMany(mappedBy = "office")
     private List<Duty> duties;
 
-    public Doctor(String name, String surname, String pesel, Specialization specialization, String address) {
+    public Office(String name, String address, String description) {
         this.name = name;
-        this.surname = surname;
-        this.pesel = pesel;
-        this.specialization = specialization;
         this.address = address;
+        this.description = description;
         this.duties = new ArrayList<>();
     }
-
 }
