@@ -38,6 +38,7 @@ public class DutyService {
      * @throws IllegalArgumentException if input is incorrect
      * @throws IllegalStateException if doctor/office is busy and cannot be present in duty to be created
      */
+    // TODO(Should check if length is multiple of Appointment.LENGTH)
     public DutyDto addDuty(DutyCreateDto dutyCreateDto) {
         if (dutyCreateDto.getStart() == null || dutyCreateDto.getFinish() == null) {
             throw new IllegalArgumentException("Start and end cannot be null");

@@ -1,12 +1,12 @@
 package org.agh.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter @NoArgsConstructor
 @Entity
@@ -31,5 +31,8 @@ public class Duty {
 
     @Setter
     private LocalDateTime finish;
+
+    @OneToMany
+    private List<Appointment> appointments;
 
 }

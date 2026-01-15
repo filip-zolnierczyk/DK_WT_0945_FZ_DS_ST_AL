@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -20,6 +23,9 @@ public class Patient {
     private String pesel;
 
     private String address;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private final List<Appointment> appointments = new ArrayList<>();
 
     public Patient(String name, String surname, String pesel, String address) {
         this.name = name;
