@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -85,11 +86,16 @@ public class DutyService {
      * @param dutyId the ID of the duty to be deleted
      * @throws IllegalStateException if duty does not exist
      */
-    public void deleteDuty(Long dutyId) {
-        if (!dutyRepository.existsById(dutyId)) {
-            throw new IllegalStateException("Duty not found");
+    public boolean deleteDuty(Long dutyId) {
+        Duty duty = dutyRepository.findById(dutyId).orElse(null);
+        if (duty == null) {
+            return false;
+        }
+        if (!duty.getAppointments().isEmpty()) {
+            throw new IllegalStateException("Duty has scheduled appointments");
         }
         dutyRepository.deleteById(dutyId);
+        return true;
     }
 
     /**

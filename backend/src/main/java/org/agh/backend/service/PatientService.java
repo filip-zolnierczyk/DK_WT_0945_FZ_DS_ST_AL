@@ -73,10 +73,15 @@ public class PatientService {
      * @return true if deleted, false otherwise
      */
     public boolean deletePatient(Long id) {
-        if (patientRepository.existsById(id)) {
-            patientRepository.deleteById(id);
-            return true;
+        Patient patient = patientRepository.findById(id).orElse(null);
+
+        if (patient == null) {
+            return false;
         }
-        return false;
+        if (!patient.getAppointments().isEmpty()) {
+            throw new IllegalStateException("Patient has associated appointments");
+        }
+        patientRepository.delete(patient);
+        return true;
     }
 }

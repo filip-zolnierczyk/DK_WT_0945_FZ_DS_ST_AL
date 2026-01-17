@@ -73,10 +73,14 @@ public class DutyController {
     })
     public ResponseEntity<Void> deleteDuty(@PathVariable Long id) {
         try {
-            dutyService.deleteDuty(id);
-            return ResponseEntity.noContent().build();
+            boolean deleted = dutyService.deleteDuty(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (IllegalStateException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(409).build();
         }
     }
 

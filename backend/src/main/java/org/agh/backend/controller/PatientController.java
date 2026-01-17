@@ -74,7 +74,15 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        boolean deleted = patientService.deletePatient(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+
+        try {
+            boolean deleted = patientService.deletePatient(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build();
     }
-}
+}}
