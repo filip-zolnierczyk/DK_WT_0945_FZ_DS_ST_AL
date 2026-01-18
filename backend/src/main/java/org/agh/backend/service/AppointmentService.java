@@ -1,7 +1,7 @@
 package org.agh.backend.service;
 
 import org.agh.backend.dto.AppointmentCreateDto;
-import org.agh.backend.dto.EmptyAppointmentDto;
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.model.*;
 import org.agh.backend.repository.AppointmentRepository;
 import org.agh.backend.repository.DutyRepository;
@@ -27,7 +27,7 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    public List<EmptyAppointmentDto> getEmptyAppointments(Long dutyId) {
+    public List<AppointmentListDto> getAppointmentListByDutyId(Long dutyId) {
         Duty duty = dutyRepository.findById(dutyId).orElse(null);
         if (duty == null) {
             throw new IllegalArgumentException();
@@ -38,24 +38,30 @@ public class AppointmentService {
         for (LocalDateTime startHour = duty.getStart(); startHour.isBefore(duty.getFinish()); startHour = startHour.plusMinutes(Appointment.LENGTH)) {
             availableHours.add(startHour);
         }
+        List<AppointmentListDto> appointmentList = new ArrayList<>();
+
+        // Adding taken appointments
         for (Appointment appointment : takenAppointments) {
-            availableHours.remove(appointment.getStartTime());
+            appointmentList.add(
+                    new AppointmentListDto(appointment)
+            );
         }
 
-        List<EmptyAppointmentDto> emptyAppointments = new ArrayList<>();
+        // Adding empty appointments
         for (LocalDateTime startTime : availableHours) {
-            emptyAppointments.add(
-                    new EmptyAppointmentDto(
+            appointmentList.add(
+                    new AppointmentListDto(
                             startTime,
                             startTime.plusMinutes(Appointment.LENGTH),
                             duty.getDoctor().getSpecialization().getName(),
                             duty.getDoctor().getName(),
-                            duty.getOffice().getName()
+                            duty.getOffice().getName(),
+                            true
                     )
             );
         }
 
-        return emptyAppointments;
+        return appointmentList;
     }
 
     public void addAppointment(AppointmentCreateDto appointmentCreateDto) {

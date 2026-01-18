@@ -1,7 +1,7 @@
 package org.agh.backend.controller;
 
 import org.agh.backend.dto.AppointmentCreateDto;
-import org.agh.backend.dto.EmptyAppointmentDto;
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +20,9 @@ public class AppointmentController {
     }
 
     @GetMapping("/{dutyId}")
-    public ResponseEntity<List<EmptyAppointmentDto>> getEmptyAppointments(@PathVariable Long dutyId) {
+    public ResponseEntity<List<AppointmentListDto>> getAppointmentsByDutyId(@PathVariable Long dutyId) {
         try {
-            return ResponseEntity.ok(appointmentService.getEmptyAppointments(dutyId));
+            return ResponseEntity.ok(appointmentService.getAppointmentListByDutyId(dutyId));
         } catch (Exception e) {
             // TODO(Make specific)
             return ResponseEntity.badRequest().build();
