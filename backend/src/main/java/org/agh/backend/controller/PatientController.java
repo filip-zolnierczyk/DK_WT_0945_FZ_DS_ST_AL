@@ -3,6 +3,7 @@ package org.agh.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
 import org.agh.backend.service.PatientService;
@@ -74,7 +75,6 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-
         try {
             boolean deleted = patientService.deletePatient(id);
             if (deleted) {
@@ -84,5 +84,16 @@ public class PatientController {
             }
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).build();
+        }
     }
-}}
+
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<List<AppointmentListDto>> getAppointmentListByPatientId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(patientService.getAppointmentListByPatientId(id));
+        } catch (Exception e) {
+            // TODO(Specify exceptions)
+            return ResponseEntity.badRequest().build();
+        }
+    }
+}

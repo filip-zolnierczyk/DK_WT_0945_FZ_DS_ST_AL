@@ -1,9 +1,12 @@
 package org.agh.backend.service;
 
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
+import org.agh.backend.model.Appointment;
 import org.agh.backend.model.Patient;
 import org.agh.backend.repository.PatientRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -83,5 +86,18 @@ public class PatientService {
         }
         patientRepository.delete(patient);
         return true;
+    }
+
+    public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient with id " + id + " does not exist");
+        }
+
+        return patient
+                .getAppointments()
+                .stream()
+                .map(AppointmentListDto::new)
+                .toList();
     }
 }
