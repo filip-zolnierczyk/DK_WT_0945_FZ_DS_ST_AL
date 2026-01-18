@@ -27,6 +27,12 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
+    /**
+     * Retrieves list of appointments
+     * @param dutyId the ID of the duty
+     * @return list of AppointmentListDto representing appointments
+     * @throws IllegalArgumentException if duty does not exist
+     */
     public List<AppointmentListDto> getAppointmentListByDutyId(Long dutyId) {
         Duty duty = dutyRepository.findById(dutyId).orElse(null);
         if (duty == null) {
@@ -64,6 +70,12 @@ public class AppointmentService {
         return appointmentList;
     }
 
+    /**
+     * Adds an appointment
+     * @param appointmentCreateDto dto representing appointment to be added
+     * @throws IllegalArgumentException if given parameters representing null
+     * @throws IllegalStateException if patient is busy at given time
+     */
     public void addAppointment(AppointmentCreateDto appointmentCreateDto) {
         if (appointmentCreateDto == null) {
             throw new IllegalArgumentException();
@@ -77,8 +89,8 @@ public class AppointmentService {
         // Check patient (if exists and is free)
         if (!patientRepository.existsById(appointmentCreateDto.getPatientId())) {
             throw new IllegalArgumentException();
-            // TODO(And is free at the time)
         }
+        // TODO(Check if patient is free, throws IllegalStateException)
 
         // TODO(Check if slot is free and startTime-DutyStartTime is multiple of Appointment.LENGTH)
 

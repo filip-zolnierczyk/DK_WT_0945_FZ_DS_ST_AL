@@ -3,10 +3,8 @@ package org.agh.backend.service;
 import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
-import org.agh.backend.model.Appointment;
 import org.agh.backend.model.Patient;
 import org.agh.backend.repository.PatientRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,6 +86,11 @@ public class PatientService {
         return true;
     }
 
+    /**
+     * Retrieves patient's appointments
+     * @param id The ID of the patient
+     * @return list of AppoinmentListDto representing patient's appointments
+     */
     public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
         if (patient == null) {

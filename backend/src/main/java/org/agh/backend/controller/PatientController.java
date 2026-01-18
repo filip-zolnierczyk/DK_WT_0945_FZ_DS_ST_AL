@@ -88,12 +88,24 @@ public class PatientController {
     }
 
     @GetMapping("/{id}/appointments")
+    @Operation(
+            summary = "Retrieve all of patient's appointments."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved patient's appointments."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Patient not found."
+            )
+    })
     public ResponseEntity<List<AppointmentListDto>> getAppointmentListByPatientId(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(patientService.getAppointmentListByPatientId(id));
-        } catch (Exception e) {
-            // TODO(Specify exceptions)
-            return ResponseEntity.badRequest().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
