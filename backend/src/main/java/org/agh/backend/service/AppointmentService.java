@@ -123,6 +123,12 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
+    /**
+     * Retrieves list of all appointments of a patient
+     * @param id The ID of the patient
+     * @return List of AppointmentListDto representing appointments
+     * @throws IllegalArgumentException if patient does not exist
+     */
     @Transactional
     public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
         if (!patientRepository.existsById(id)) {
