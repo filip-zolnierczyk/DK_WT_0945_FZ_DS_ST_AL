@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+    List<Appointment> findAllByPatientId(Long patientId);
     List<Appointment> findAllByDuty(Duty duty);
     boolean existsByDutyAndStartTime(Duty duty, LocalDateTime startTime);
     boolean existsByPatientAndStartTime(Patient patient, LocalDateTime startTime);
