@@ -2,6 +2,7 @@ package org.agh.backend.service;
 
 import org.agh.backend.dto.DutyCreateDto;
 import org.agh.backend.dto.DutyDto;
+import org.agh.backend.model.Appointment;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Duty;
 import org.agh.backend.model.Office;
@@ -10,9 +11,6 @@ import org.agh.backend.repository.DutyRepository;
 import org.agh.backend.repository.OfficeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,13 +37,17 @@ public class DutyService {
      * @throws IllegalArgumentException if input is incorrect
      * @throws IllegalStateException if doctor/office is busy and cannot be present in duty to be created
      */
-    // TODO(Should check if length is multiple of Appointment.LENGTH)
     public DutyDto addDuty(DutyCreateDto dutyCreateDto) {
         if (dutyCreateDto.getStart() == null || dutyCreateDto.getFinish() == null) {
             throw new IllegalArgumentException("Start and end cannot be null");
         }
         if (!dutyCreateDto.getFinish().isAfter(dutyCreateDto.getStart())) {
             throw new IllegalArgumentException("End must be after start");
+        }
+
+        int duration = dutyCreateDto.getFinish().getMinute() - dutyCreateDto.getStart().getMinute();
+        if (duration % Appointment.LENGTH != 0) {
+            throw new IllegalArgumentException("Duration must be a multiple of " + Appointment.LENGTH);
         }
 
         Doctor doctor = doctorRepository.findById(dutyCreateDto.getDoctorId())

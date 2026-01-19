@@ -75,7 +75,7 @@ public class AppointmentService {
      * Adds an appointment
      * @param appointmentCreateDto dto representing appointment to be added
      * @throws IllegalArgumentException if given parameters representing null
-     * @throws IllegalStateException if patient is busy at given time
+     * @throws IllegalStateException if patient is busy or slot is occupied at given time
      */
     public void addAppointment(AppointmentCreateDto appointmentCreateDto) {
         if (appointmentCreateDto == null) {
@@ -91,12 +91,19 @@ public class AppointmentService {
         if (!patientRepository.existsById(appointmentCreateDto.getPatientId())) {
             throw new IllegalArgumentException();
         }
-        // TODO(Check if patient is free, throws IllegalStateException)
-
-        // TODO(Check if slot is free and startTime-DutyStartTime is multiple of Appointment.LENGTH)
 
         Duty duty = dutyRepository.findById(appointmentCreateDto.getDutyId()).orElse(null);
+
+        // Check if slot is free
+        if (appointmentRepository.existsByDutyAndStartTime(duty, appointmentCreateDto.getStartTime())) {
+            throw new IllegalStateException("Slot is occupied");
+        }
+
         Patient patient = patientRepository.findById(appointmentCreateDto.getPatientId()).orElse(null);
+
+        if (appointmentRepository.existsByPatientAndStartTime(patient, appointmentCreateDto.getStartTime())) {
+            throw new IllegalStateException("Patient is busy");
+        }
 
         Appointment appointment = new Appointment(
             duty, patient, appointmentCreateDto.getStartTime()
