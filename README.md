@@ -79,9 +79,10 @@ Analogicznie sytuacja ma się z Pacjentami - aby dodać pacjenta należy wypełn
 <img width="880" height="515" alt="Zrzut ekranu 2026-01-09 040441" src="https://github.com/user-attachments/assets/56bf057b-8167-46ef-9ad9-9c2a8e5f49c6" />
 
 Listę wszystkich pacjentów można ujrzeć po wciśnięciu przycisku 'Pacjenci'.
+Mamy tutaj możliwość umówienia pacjenta na wybraną wizytę lub przejrzenia listy umówionych wizyt danego pacjenta.
 Każdego pacjenta można usunąć wciskając czerwony przycisk z napisem 'usuń'.
 
-<img width="879" height="335" alt="image" src="https://github.com/user-attachments/assets/dd4c1e42-9225-421a-bf1b-ec46f77f224c" />
+<img width="1143" height="548" alt="Zrzut ekranu 2026-01-19 234436" src="https://github.com/user-attachments/assets/3e79e3dc-43ea-4854-8a84-3b9821e24d12" />
 
 Również analogicznie sytuacja ma się z gabinetami - możemy je dodawać, usuwać, przeglądać wszystkie.
 
@@ -98,6 +99,12 @@ Przycisk 'Dodaj dyżur' przekierowuje nas do formularza, gdzie możemy dodać dy
 <img width="1202" height="889" alt="Zrzut ekranu 2026-01-09 040109" src="https://github.com/user-attachments/assets/228e50dc-2c9b-48bf-88de-7c7815ae4038" />
 
 Przycisk 'Usuń wszystkie dyżury' usuwa wszystkie aktualnie zaplanowane dyżury (w razie nagłego bankructwa szpitala lub innych niespodziewanych sytuacji)
+</br>
+Widok listy dostępnych terminów na które możemy umówić pacjenta do wybranego specjalisty:
+<img width="1196" height="992" alt="Zrzut ekranu 2026-01-19 233848" src="https://github.com/user-attachments/assets/aff892b5-a4ac-45d0-abfb-7d09edcf5eed" />
+
+Umówioną wizytę pacjenta możemy znaleźć po przejściu na stronę ze szczegółami pacjenta: 
+<img width="1162" height="769" alt="Zrzut ekranu 2026-01-19 234001" src="https://github.com/user-attachments/assets/51386e80-9326-4be2-9c49-59252f87d4a8" />
 
 ## Autorzy
 
