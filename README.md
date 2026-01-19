@@ -1,6 +1,6 @@
 # Szpital
 
-Projekt obejmuje podstawowe operacje związane z dodawaniem, usuwaniem oraz odczytywaniem lekarzy.
+Projekt obejmuje podstawowe operacje związane z symulacją aplikacji przychodni zdrowia.
 
 ## Struktura projektu
 
@@ -8,7 +8,8 @@ Projekt został podzielony na dwie części - frontend oraz backend, a komunikac
 
 ### UML klas modelu domenowego
 
-<img width="646" height="933" alt="Zrzut ekranu 2026-01-12 225528" src="https://github.com/user-attachments/assets/65ba682f-9560-4276-887f-2ae4580070f8" />
+
+<img width="508" height="879" alt="Zrzut ekranu 2026-01-19 202503" src="https://github.com/user-attachments/assets/60378efd-dc70-47ff-b9c1-2bf2e3452f7d" />
 
 
 ### Frontend
