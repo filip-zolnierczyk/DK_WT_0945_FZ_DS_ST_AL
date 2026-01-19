@@ -1,5 +1,6 @@
 package org.agh.backend.service;
 
+import jakarta.transaction.Transactional;
 import org.agh.backend.dto.AppointmentCreateDto;
 import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.model.*;
@@ -34,38 +35,36 @@ public class AppointmentService {
      * @throws IllegalArgumentException if duty does not exist
      */
     public List<AppointmentListDto> getAppointmentListByDutyId(Long dutyId) {
-        Duty duty = dutyRepository.findById(dutyId).orElse(null);
-        if (duty == null) {
-            throw new IllegalArgumentException();
-        }
+        Duty duty = dutyRepository.findById(dutyId)
+                .orElseThrow(() -> new IllegalArgumentException("Duty not found"));
 
         List<Appointment> takenAppointments = appointmentRepository.findAllByDuty(duty);
-        List<LocalDateTime> availableHours = new ArrayList<>();
-        for (LocalDateTime startHour = duty.getStart(); startHour.isBefore(duty.getFinish()); startHour = startHour.plusMinutes(Appointment.LENGTH)) {
-            availableHours.add(startHour);
-        }
         List<AppointmentListDto> appointmentList = new ArrayList<>();
 
-        // Adding taken appointments
-        for (Appointment appointment : takenAppointments) {
-            appointmentList.add(
-                    new AppointmentListDto(appointment)
-            );
-        }
+        for (LocalDateTime startHour = duty.getStart();
+             startHour.isBefore(duty.getFinish());
+             startHour = startHour.plusMinutes(Appointment.LENGTH)) {
 
-        // Adding empty appointments
-        for (LocalDateTime startTime : availableHours) {
-            appointmentList.add(
-                    new AppointmentListDto(
-                            null,
-                            startTime,
-                            startTime.plusMinutes(Appointment.LENGTH),
-                            duty.getDoctor().getSpecialization().getName(),
-                            duty.getDoctor().getName(),
-                            duty.getOffice().getName(),
-                            false
-                    )
-            );
+            final LocalDateTime currentHour = startHour;
+
+            Appointment matchingAppointment = takenAppointments.stream()
+                    .filter(a -> a.getStartTime().equals(currentHour))
+                    .findFirst()
+                    .orElse(null);
+
+            if (matchingAppointment != null) {
+                appointmentList.add(new AppointmentListDto(matchingAppointment));
+            } else {
+                appointmentList.add(new AppointmentListDto(
+                        null,
+                        currentHour,
+                        currentHour.plusMinutes(Appointment.LENGTH),
+                        duty.getDoctor().getSpecialization().getName(),
+                        duty.getDoctor().getName(),
+                        duty.getOffice().getName(),
+                        false
+                ));
+            }
         }
 
         return appointmentList;
@@ -77,6 +76,7 @@ public class AppointmentService {
      * @throws IllegalArgumentException if given parameters representing null
      * @throws IllegalStateException if patient is busy or slot is occupied at given time
      */
+    @Transactional
     public void addAppointment(AppointmentCreateDto appointmentCreateDto) {
         if (appointmentCreateDto == null) {
             throw new IllegalArgumentException();
@@ -121,6 +121,19 @@ public class AppointmentService {
             throw new IllegalArgumentException();
         }
         appointmentRepository.deleteById(id);
+    }
+
+    @Transactional
+    public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
+        if (!patientRepository.existsById(id)) {
+            throw new IllegalArgumentException("Patient with id " + id + " does not exist");
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAllByPatientId(id);
+
+        return appointments.stream()
+                .map(AppointmentListDto::new)
+                .toList();
     }
 
 }

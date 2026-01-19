@@ -9,6 +9,8 @@ import OfficeList from "./components/OfficeList.jsx";
 import AddOfficeForm from "./components/AddOfficeForm.jsx";
 import AddDutyForm from "./components/AddDutyForm.jsx";
 import OfficeDetails from "./components/OfficeDetails.jsx";
+import BookAppointment from "./components/BookAppointment.jsx";
+import PatientDetails from "./components/PatientDetails.jsx";
 
 function App() {
   return (
@@ -31,6 +33,11 @@ function App() {
           <Route path="/offices" element={<OfficeList />} />
           <Route path="/add-office" element={<AddOfficeForm />} />
           <Route path="/add-duty" element={<AddDutyForm />} />
+          <Route
+            path="/patients/:patientId/book"
+            element={<BookAppointment />}
+          />
+          <Route path="/patients/:patientId" element={<PatientDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>

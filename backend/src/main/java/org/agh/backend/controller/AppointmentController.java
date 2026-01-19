@@ -60,7 +60,7 @@ public class AppointmentController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Successfully added an appoinement"
+                    description = "Successfully added an appointment"
             ),
             @ApiResponse(
                     responseCode = "404",

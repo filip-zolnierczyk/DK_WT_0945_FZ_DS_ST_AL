@@ -40,6 +40,28 @@ function OfficeDetails() {
     loadData();
   }, [id]);
 
+  const handleDeleteDuty = async (dutyId) => {
+    if (!window.confirm("Czy na pewno chcesz usunąć ten dyżur?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:8080/duties/${dutyId}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setDuties((prev) => prev.filter((d) => d.id !== dutyId));
+      } else if (res.status === 409) {
+        alert(
+          "Nie można usunąć dyżuru, który posiada aktywne rezerwacje.",
+        );
+      } else {
+        throw new Error("Błąd podczas usuwania dyżuru");
+      }
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   const formatDateTime = (isoString) => {
     const date = new Date(isoString);
     return {
@@ -74,9 +96,7 @@ function OfficeDetails() {
       </div>
 
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
-            Dyżury
-        </h3>
+        <h3 className="text-lg font-semibold mb-4 text-gray-800">Dyżury</h3>
 
         {duties && duties.length > 0 ? (
           <div className="space-y-3">
@@ -102,11 +122,33 @@ function OfficeDetails() {
                       </p>
                     </div>
                     <div className="text-right border-l pl-4 border-blue-100">
-                      <p className="font-bold text-blue-900">{start.date} - {finish.date}</p>
+                      <p className="font-bold text-blue-900">
+                        {start.date} - {finish.date}
+                      </p>
                       <p className="text-sm font-medium text-gray-600">
                         {start.time} — {finish.time}
                       </p>
                     </div>
+                    <button
+                      onClick={() => handleDeleteDuty(duty.id)}
+                      className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-md transition-all border border-red-100"
+                      title="Usuń dyżur"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               );
