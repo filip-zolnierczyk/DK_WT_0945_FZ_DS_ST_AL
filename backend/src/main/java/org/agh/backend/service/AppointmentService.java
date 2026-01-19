@@ -57,12 +57,13 @@ public class AppointmentService {
         for (LocalDateTime startTime : availableHours) {
             appointmentList.add(
                     new AppointmentListDto(
+                            null,
                             startTime,
                             startTime.plusMinutes(Appointment.LENGTH),
                             duty.getDoctor().getSpecialization().getName(),
                             duty.getDoctor().getName(),
                             duty.getOffice().getName(),
-                            true
+                            false
                     )
             );
         }
@@ -101,6 +102,13 @@ public class AppointmentService {
             duty, patient, appointmentCreateDto.getStartTime()
         );
         appointmentRepository.save(appointment);
+    }
+
+    public void cancelAppointment(Long id) {
+        if (!appointmentRepository.existsById(id)) {
+            throw new IllegalArgumentException();
+        }
+        appointmentRepository.deleteById(id);
     }
 
 }

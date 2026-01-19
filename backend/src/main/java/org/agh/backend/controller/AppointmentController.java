@@ -82,4 +82,27 @@ public class AppointmentController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Cancel an appointment"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully canceled an appointment"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Appointment not found"
+            )
+    })
+    public ResponseEntity<Void> cancelAppointment(@PathVariable Long id) {
+        try {
+            appointmentService.cancelAppointment(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
