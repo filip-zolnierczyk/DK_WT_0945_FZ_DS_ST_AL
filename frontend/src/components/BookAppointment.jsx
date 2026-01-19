@@ -91,7 +91,8 @@ function BookAppointment() {
   };
 
   const handleBook = async (slot) => {
-    const dateStr = slot.start.toISOString().split(".")[0];
+    const d = slot.start;
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
 
     try {
       const res = await fetch("http://localhost:8080/appointments", {

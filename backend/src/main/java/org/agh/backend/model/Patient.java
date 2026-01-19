@@ -24,7 +24,7 @@ public class Patient {
 
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Appointment> appointments = new ArrayList<>();
 
     public Patient(String name, String surname, String pesel, String address) {

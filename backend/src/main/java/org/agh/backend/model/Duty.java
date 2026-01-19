@@ -33,7 +33,7 @@ public class Duty {
     @Setter
     private LocalDateTime finish;
 
-    @OneToMany
+    @OneToMany(mappedBy = "duty")
     private List<Appointment> appointments = new ArrayList<>();
 
 }
