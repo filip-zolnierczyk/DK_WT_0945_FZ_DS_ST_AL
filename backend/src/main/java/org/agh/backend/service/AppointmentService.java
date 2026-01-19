@@ -104,6 +104,11 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
+    /**
+     * Cancels an appointment
+     * @param id The ID of the appointment to cancel
+     * @throws IllegalArgumentException if appointment does not exist
+     */
     public void cancelAppointment(Long id) {
         if (!appointmentRepository.existsById(id)) {
             throw new IllegalArgumentException();
