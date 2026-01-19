@@ -87,8 +87,12 @@ public class DutyController {
     @DeleteMapping("/all")
     @Operation(summary = "Delete all duties", description = "Removes all duties from the database")
     public ResponseEntity<Void> deleteAllDuties() {
-        dutyService.deleteAllDuties();
-        return ResponseEntity.noContent().build();
+        try {
+            dutyService.deleteAllDuties();
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build();
+        }
     }
 
 }
