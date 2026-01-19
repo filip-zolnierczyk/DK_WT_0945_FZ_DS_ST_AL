@@ -72,7 +72,8 @@ public class PatientController {
     @Operation(summary = "Delete patient by ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Successfully deleted patient"),
-            @ApiResponse(responseCode = "404", description = "Patient not found")
+            @ApiResponse(responseCode = "404", description = "Patient not found"),
+            @ApiResponse(responseCode = "409", description = "Patient has booked appointments")
     })
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         try {

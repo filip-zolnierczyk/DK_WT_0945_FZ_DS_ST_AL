@@ -33,6 +33,7 @@ public class PatientService {
      * Retrieves a patient by ID
      * @param id the ID of the patient
      * @return patientDto representing the patient
+     * @throws IllegalArgumentException if patient does not exist
      */
     public PatientDto getPatientById(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
@@ -72,6 +73,7 @@ public class PatientService {
      * Deletes a patient by ID
      * @param id the ID of the patient to be deleted
      * @return true if deleted, false otherwise
+     * @throws IllegalStateException if patient has associated appointments
      */
     public boolean deletePatient(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
@@ -89,7 +91,8 @@ public class PatientService {
     /**
      * Retrieves patient's appointments
      * @param id The ID of the patient
-     * @return list of AppoinmentListDto representing patient's appointments
+     * @return list of AppointmentListDto representing patient's appointments
+     * @throws IllegalArgumentException if patient does not exist
      */
     public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
