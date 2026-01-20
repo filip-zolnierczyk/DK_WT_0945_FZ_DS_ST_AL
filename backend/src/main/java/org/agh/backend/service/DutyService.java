@@ -2,16 +2,16 @@ package org.agh.backend.service;
 
 import org.agh.backend.dto.DutyCreateDto;
 import org.agh.backend.dto.DutyDto;
+import org.agh.backend.model.Appointment;
 import org.agh.backend.model.Doctor;
 import org.agh.backend.model.Duty;
 import org.agh.backend.model.Office;
+import org.agh.backend.repository.AppointmentRepository;
 import org.agh.backend.repository.DoctorRepository;
 import org.agh.backend.repository.DutyRepository;
 import org.agh.backend.repository.OfficeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -20,15 +20,18 @@ public class DutyService {
     private final DutyRepository dutyRepository;
     private final DoctorRepository doctorRepository;
     private final OfficeRepository officeRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public DutyService(
             DutyRepository dutyRepository,
             DoctorRepository doctorRepository,
-            OfficeRepository officeRepository
+            OfficeRepository officeRepository,
+            AppointmentRepository appointmentRepository
     ) {
         this.dutyRepository = dutyRepository;
         this.doctorRepository = doctorRepository;
         this.officeRepository = officeRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     /**
@@ -44,6 +47,11 @@ public class DutyService {
         }
         if (!dutyCreateDto.getFinish().isAfter(dutyCreateDto.getStart())) {
             throw new IllegalArgumentException("End must be after start");
+        }
+
+        int duration = dutyCreateDto.getFinish().getMinute() - dutyCreateDto.getStart().getMinute();
+        if (duration % Appointment.LENGTH != 0) {
+            throw new IllegalArgumentException("Duration must be a multiple of " + Appointment.LENGTH);
         }
 
         Doctor doctor = doctorRepository.findById(dutyCreateDto.getDoctorId())
@@ -84,17 +92,26 @@ public class DutyService {
      * @param dutyId the ID of the duty to be deleted
      * @throws IllegalStateException if duty does not exist
      */
-    public void deleteDuty(Long dutyId) {
-        if (!dutyRepository.existsById(dutyId)) {
-            throw new IllegalStateException("Duty not found");
+    public boolean deleteDuty(Long dutyId) {
+        Duty duty = dutyRepository.findById(dutyId).orElse(null);
+        if (duty == null) {
+            return false;
+        }
+        if (!duty.getAppointments().isEmpty()) {
+            throw new IllegalStateException("Duty has scheduled appointments");
         }
         dutyRepository.deleteById(dutyId);
+        return true;
     }
 
     /**
      * Deletes all duties
+     * @throws IllegalStateException if any duty has scheduled appointment
      */
     public void deleteAllDuties() {
+        if (!appointmentRepository.findAll().isEmpty()) {
+            throw new IllegalStateException("Some duties have scheduled appointments");
+        }
         dutyRepository.deleteAll();
     }
 }

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     boolean existsByPesel(String pesel);
     Patient findByPesel(String pesel);
+    boolean existsById(Long patientId);
 }

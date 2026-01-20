@@ -1,5 +1,6 @@
 package org.agh.backend.service;
 
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
 import org.agh.backend.model.Patient;
@@ -32,6 +33,7 @@ public class PatientService {
      * Retrieves a patient by ID
      * @param id the ID of the patient
      * @return patientDto representing the patient
+     * @throws IllegalArgumentException if patient does not exist
      */
     public PatientDto getPatientById(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
@@ -71,12 +73,37 @@ public class PatientService {
      * Deletes a patient by ID
      * @param id the ID of the patient to be deleted
      * @return true if deleted, false otherwise
+     * @throws IllegalStateException if patient has associated appointments
      */
     public boolean deletePatient(Long id) {
-        if (patientRepository.existsById(id)) {
-            patientRepository.deleteById(id);
-            return true;
+        Patient patient = patientRepository.findById(id).orElse(null);
+
+        if (patient == null) {
+            return false;
         }
-        return false;
+        if (!patient.getAppointments().isEmpty()) {
+            throw new IllegalStateException("Patient has associated appointments");
+        }
+        patientRepository.delete(patient);
+        return true;
+    }
+
+    /**
+     * Retrieves patient's appointments
+     * @param id The ID of the patient
+     * @return list of AppointmentListDto representing patient's appointments
+     * @throws IllegalArgumentException if patient does not exist
+     */
+    public List<AppointmentListDto> getAppointmentListByPatientId(Long id) {
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient with id " + id + " does not exist");
+        }
+
+        return patient
+                .getAppointments()
+                .stream()
+                .map(AppointmentListDto::new)
+                .toList();
     }
 }

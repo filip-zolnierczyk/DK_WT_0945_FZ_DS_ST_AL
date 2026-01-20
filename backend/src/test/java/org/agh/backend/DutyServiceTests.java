@@ -1,6 +1,5 @@
 package org.agh.backend;
 
-import org.agh.backend.dto.DoctorCreateDto;
 import org.agh.backend.dto.DutyCreateDto;
 import org.agh.backend.dto.DutyDto;
 import org.agh.backend.model.Doctor;
@@ -131,7 +130,9 @@ class DutyServiceTests {
 
     @Test
     void deleteDutySuccessfully() {
-        when(dutyRepository.existsById(1L)).thenReturn(true);
+        Duty duty = new Duty();
+
+        when(dutyRepository.findById(1L)).thenReturn(Optional.of(duty));
         doNothing().when(dutyRepository).deleteById(1L);
 
         assertDoesNotThrow(() -> dutyService.deleteDuty(1L));
@@ -142,6 +143,6 @@ class DutyServiceTests {
     void deleteDutyFailsWhenNotExist() {
         when(dutyRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(IllegalStateException.class, () -> dutyService.deleteDuty(1L));
+        assertFalse(dutyService.deleteDuty(1L));
     }
 }

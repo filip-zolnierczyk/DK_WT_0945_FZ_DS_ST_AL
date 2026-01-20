@@ -3,6 +3,7 @@ package org.agh.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.agh.backend.dto.AppointmentListDto;
 import org.agh.backend.dto.PatientCreateDto;
 import org.agh.backend.dto.PatientDto;
 import org.agh.backend.service.PatientService;
@@ -71,10 +72,41 @@ public class PatientController {
     @Operation(summary = "Delete patient by ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Successfully deleted patient"),
-            @ApiResponse(responseCode = "404", description = "Patient not found")
+            @ApiResponse(responseCode = "404", description = "Patient not found"),
+            @ApiResponse(responseCode = "409", description = "Patient has booked appointments")
     })
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        boolean deleted = patientService.deletePatient(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        try {
+            boolean deleted = patientService.deletePatient(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build();
+        }
+    }
+
+    @GetMapping("/{id}/appointments")
+    @Operation(
+            summary = "Retrieve all of patient's appointments."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved patient's appointments."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Patient not found."
+            )
+    })
+    public ResponseEntity<List<AppointmentListDto>> getAppointmentListByPatientId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(patientService.getAppointmentListByPatientId(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

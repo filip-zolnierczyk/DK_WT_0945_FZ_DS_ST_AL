@@ -1,6 +1,5 @@
 package org.agh.backend.dto;
 
-import lombok.Setter;
 import org.agh.backend.model.Duty;
 
 import java.time.LocalDateTime;
@@ -11,13 +10,13 @@ import org.agh.backend.model.Specialization;
 @Getter
 public class DutyDto {
 
-    private Long id;
-    private LocalDateTime start;
-    private LocalDateTime finish;
-    private String officeName;
-    private String doctorName;
-    private String doctorSurname;
-    private Specialization specialization;
+    private final Long id;
+    private final LocalDateTime start;
+    private final LocalDateTime finish;
+    private final String officeName;
+    private final String doctorName;
+    private final String doctorSurname;
+    private final Specialization specialization;
 
     public DutyDto(Duty duty) {
         this.id = duty.getId();
